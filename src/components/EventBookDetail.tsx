@@ -6,6 +6,7 @@ import { StatsCards } from './StatsCards';
 import { TaskSection } from './TaskSection';
 import { FloatingActionButton } from './FloatingActionButton';
 import { CloudDecoration } from './CloudDecoration';
+import { safeAreaPadding } from '../utils/safeArea';
 import { EventBook } from './EventBooksList';
 import { formatCountdown, formatEventBookName, formatEventBookDescription } from '../utils/dateUtils';
 
@@ -434,14 +435,20 @@ export function EventBookDetail({
   const IconComponent = getIconComponent(eventBook.icon);
 
   return (
-    <div 
-      className="min-h-screen pb-24 relative"
-      style={{ background: theme.styles.backgroundImage }}
+    <div
+      className="full-screen-bg relative"
+      style={{
+        background: theme.styles.backgroundImage,
+        ...safeAreaPadding({ bottom: 96 })
+      }}
     >
       <CloudDecoration />
-      
+
       {/* Header */}
-      <div className="relative z-10 px-4 pt-6 pb-2">
+      <div
+        className="relative z-10 pb-2"
+        style={safeAreaPadding({ top: 24, left: 16, right: 16 })}
+      >
         <div className="flex items-center justify-between mb-6">
           <button
             onClick={onBack}
@@ -488,7 +495,10 @@ export function EventBookDetail({
         </div>
       </div>
       
-      <div className="relative z-10 px-4 space-y-6">
+      <div
+        className="relative z-10 space-y-6"
+        style={safeAreaPadding({ left: 16, right: 16 })}
+      >
         <FilterChips 
           tasks={allTasks}
           selectedFilter={currentFilter}

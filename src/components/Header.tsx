@@ -1,5 +1,6 @@
 import { Settings } from "lucide-react";
 import { useTheme } from '../contexts/ThemeContext';
+import { safeAreaPadding } from '../utils/safeArea';
 
 interface HeaderProps {
   onSettingsClick?: () => void;
@@ -9,7 +10,10 @@ export function Header({ onSettingsClick }: HeaderProps) {
   const { theme } = useTheme();
   
   return (
-    <div className="flex items-center justify-between mb-2 px-4 pt-4">
+    <div
+      className="flex items-center justify-between mb-2"
+      style={safeAreaPadding({ top: 16, left: 16, right: 16 })}
+    >
       <div className="flex items-center gap-3">
         <div 
           className="w-2 h-8 rounded-full"

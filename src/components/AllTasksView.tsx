@@ -8,6 +8,7 @@ import { FloatingActionButton } from './FloatingActionButton';
 import { CloudDecoration } from './CloudDecoration';
 import { EventBookFilterChips } from './EventBookFilterChips';
 import { formatCountdown, formatEventBookName, formatEventBookDescription } from '../utils/dateUtils';
+import { safeAreaInset, safeAreaPadding } from '../utils/safeArea';
 
 interface Task {
   id: string;
@@ -469,14 +470,20 @@ export function AllTasksView({
   };
 
   return (
-    <div 
+    <div
       className="full-screen-bg relative"
-      style={{ background: theme.styles.backgroundImage }}
+      style={{
+        background: theme.styles.backgroundImage,
+        ...safeAreaPadding({ bottom: 96 })
+      }}
     >
       <CloudDecoration />
-      
+
       {/* Header */}
-      <div className="relative z-10 px-4 pb-2 pt-4">
+      <div
+        className="relative z-10 pb-2"
+        style={safeAreaPadding({ top: 24, left: 16, right: 16 })}
+      >
         <div className="flex items-center justify-between mb-6">
           <button
             onClick={onBack}
@@ -523,7 +530,13 @@ export function AllTasksView({
         </div>
       </div>
       
-      <div className="relative z-10 px-4 space-y-6 pb-24">
+      <div
+        className="relative z-10 space-y-6"
+        style={{
+          ...safeAreaPadding({ left: 16, right: 16 }),
+          paddingBottom: safeAreaInset('bottom', 96)
+        }}
+      >
         {/* Filter Controls */}
         <div className="space-y-4">
           {/* Event Book Filter - Now first row */}

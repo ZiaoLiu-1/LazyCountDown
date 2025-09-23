@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { ArrowLeft, Check, Trash2, Calendar, Clock, Star, RefreshCw } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
+import { safeAreaInset, safeAreaPadding } from '../utils/safeArea';
 import { CategorySlider } from './CategorySlider';
 
 interface TaskDetailProps {
@@ -75,17 +76,20 @@ export function TaskDetail({ task, onBack, onSave, onDelete, onComplete }: TaskD
   };
 
   return (
-    <div 
-      className="min-h-screen"
-      style={{ 
+    <div
+      className="full-screen-bg"
+      style={{
         background: theme.styles.backgroundImage,
-        color: theme.colors.foreground 
+        color: theme.colors.foreground,
+        ...safeAreaPadding({ bottom: 96 })
       }}
     >
       {/* Fixed Header */}
-      <div 
-        className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-4 py-4 border-b"
+      <div
+        className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between border-b"
         style={{
+          ...safeAreaPadding({ top: 16, left: 16, right: 16 }),
+          paddingBottom: 16,
           backgroundColor: theme.colors.background + 'F0', // 半透明背景
           backdropFilter: 'blur(10px)',
           borderColor: theme.colors.cardBorder
@@ -114,7 +118,13 @@ export function TaskDetail({ task, onBack, onSave, onDelete, onComplete }: TaskD
       </div>
 
       {/* Content with top padding to account for fixed header */}
-      <div className="pt-20 px-4 pb-24 space-y-6">
+      <div
+        className="space-y-6"
+        style={{
+          paddingTop: safeAreaInset('top', 80),
+          ...safeAreaPadding({ left: 16, right: 16 })
+        }}
+      >
         {/* Title Input */}
         <div className="space-y-3">
           <label className="text-sm flex items-center gap-1" style={{ color: theme.colors.mutedForeground }}>
