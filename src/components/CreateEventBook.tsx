@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { ArrowLeft, Check, GraduationCap, Home, Dumbbell, Briefcase, BookOpen, Heart, Palette, Camera, Music, Coffee, Car, Plane } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
+import { safeAreaPadding } from '../utils/safeArea';
 
 interface CreateEventBookProps {
   onBack: () => void;
@@ -54,12 +55,21 @@ export function CreateEventBook({ onBack, onSave }: CreateEventBookProps) {
   const isValid = name.trim().length > 0;
 
   return (
-    <div 
-      className="min-h-screen pb-24"
-      style={{ background: theme.styles.backgroundImage }}
+    <div
+      className="full-screen-bg"
+      style={{
+        background: theme.styles.backgroundImage,
+        ...safeAreaPadding({ bottom: 96 })
+      }}
     >
       {/* Header */}
-      <div className="flex items-center justify-between p-4 pt-6 mb-6">
+      <div
+        className="flex items-center justify-between mb-6"
+        style={{
+          ...safeAreaPadding({ top: 24, left: 16, right: 16 }),
+          paddingBottom: 16
+        }}
+      >
         <button
           onClick={onBack}
           className="flex items-center gap-2 transition-colors"
@@ -87,7 +97,10 @@ export function CreateEventBook({ onBack, onSave }: CreateEventBookProps) {
         </button>
       </div>
 
-      <div className="px-4 space-y-8">
+      <div
+        className="space-y-8"
+        style={safeAreaPadding({ left: 16, right: 16 })}
+      >
         {/* Preview */}
         <div 
           className={`p-6 rounded-3xl border ${theme.styles.cardStyle}`}

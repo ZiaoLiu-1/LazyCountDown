@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Plus, BookOpen, GraduationCap, Heart, Dumbbell, Briefcase, Home, ChevronRight, Filter } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
 import { formatEventBookName, formatEventBookDescription } from '../utils/dateUtils';
+import { safeAreaInset, safeAreaPadding } from '../utils/safeArea';
 
 export interface EventBook {
   id: string;
@@ -88,12 +89,18 @@ export function EventBooksList({ onSelectBook, onCreateBook, onSettingsClick, on
   };
 
   return (
-    <div 
+    <div
       className="full-screen-bg no-bounce"
-      style={{ background: theme.styles.backgroundImage }}
+      style={{
+        background: theme.styles.backgroundImage,
+        ...safeAreaPadding({ bottom: 96 })
+      }}
     >
       {/* Header */}
-      <div className="flex items-center justify-between px-4 mb-6 pt-4">
+      <div
+        className="flex items-center justify-between mb-6"
+        style={safeAreaPadding({ top: 24, left: 16, right: 16 })}
+      >
         <div>
           <h1 className="text-2xl mb-1 mobile-text-size" style={{ color: theme.colors.foreground }}>
             {t.eventBooks.title}
@@ -118,7 +125,13 @@ export function EventBooksList({ onSelectBook, onCreateBook, onSettingsClick, on
       </div>
 
       {/* Event Books Grid */}
-      <div className="px-4 space-y-4 mobile-scroll pb-24">
+      <div
+        className="space-y-4 mobile-scroll"
+        style={{
+          ...safeAreaPadding({ left: 16, right: 16 }),
+          paddingBottom: safeAreaInset('bottom', 96)
+        }}
+      >
         {/* View All Tasks Button */}
         <button
           onClick={onViewAllTasks}

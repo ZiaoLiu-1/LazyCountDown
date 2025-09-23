@@ -3,6 +3,7 @@ import { ArrowLeft, Plus, Trash2, Edit3, Tag, AlertTriangle, Folder } from 'luci
 import { useTheme } from '../contexts/ThemeContext';
 import { CloudDecoration } from './CloudDecoration';
 import { EventBook } from './EventBooksList';
+import { safeAreaPadding } from '../utils/safeArea';
 
 interface Category {
   id: string;
@@ -93,14 +94,20 @@ export function CategoryManagement({ eventBook, onBack }: CategoryManagementProp
   };
 
   return (
-    <div 
-      className="min-h-screen pb-24 relative"
-      style={{ background: theme.styles.backgroundImage }}
+    <div
+      className="full-screen-bg relative"
+      style={{
+        background: theme.styles.backgroundImage,
+        ...safeAreaPadding({ bottom: 96 })
+      }}
     >
       <CloudDecoration />
-      
+
       {/* Header */}
-      <div className="relative z-10 px-4 pt-6 pb-2">
+      <div
+        className="relative z-10 pb-2"
+        style={safeAreaPadding({ top: 24, left: 16, right: 16 })}
+      >
         <div className="flex items-center justify-between mb-6">
           <button
             onClick={onBack}
@@ -151,7 +158,10 @@ export function CategoryManagement({ eventBook, onBack }: CategoryManagementProp
         </div>
       </div>
       
-      <div className="relative z-10 px-4 space-y-6">
+      <div
+        className="relative z-10 space-y-6"
+        style={safeAreaPadding({ left: 16, right: 16 })}
+      >
         {/* Add Category Form */}
         {showAddForm && (
           <div 
@@ -394,7 +404,10 @@ export function CategoryManagement({ eventBook, onBack }: CategoryManagementProp
 
       {/* Delete Confirmation Dialog */}
       {showDeleteDialog && categoryToDelete && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+        <div
+          className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+          style={safeAreaPadding({ top: 24, bottom: 24, left: 16, right: 16 })}
+        >
           <div 
             className={`w-full max-w-md p-6 rounded-2xl border ${theme.styles.cardStyle}`}
             style={{

@@ -1,5 +1,6 @@
 import { ArrowLeft, Upload, Calendar, Check, AlertCircle, FileText } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
+import { safeAreaPadding } from '../utils/safeArea';
 
 interface ImportICSProps {
   onBack: () => void;
@@ -10,12 +11,21 @@ export function ImportICS({ onBack, onImport }: ImportICSProps) {
   const { theme, t } = useTheme();
 
   return (
-    <div 
-      className="min-h-screen pb-24"
-      style={{ background: theme.styles.backgroundImage }}
+    <div
+      className="full-screen-bg"
+      style={{
+        background: theme.styles.backgroundImage,
+        ...safeAreaPadding({ bottom: 96 })
+      }}
     >
       {/* Header */}
-      <div className="flex items-center justify-between p-4 pt-6 mb-6">
+      <div
+        className="flex items-center justify-between mb-6"
+        style={{
+          ...safeAreaPadding({ top: 24, left: 16, right: 16 }),
+          paddingBottom: 16
+        }}
+      >
         <button
           onClick={onBack}
           className="flex items-center gap-2 transition-colors"
@@ -37,7 +47,10 @@ export function ImportICS({ onBack, onImport }: ImportICSProps) {
         </button>
       </div>
 
-      <div className="px-4 space-y-6">
+      <div
+        className="space-y-6"
+        style={safeAreaPadding({ left: 16, right: 16 })}
+      >
         {/* Upload Area */}
         <div 
           className={`p-8 rounded-2xl border-2 border-dashed text-center ${theme.styles.cardStyle}`}
