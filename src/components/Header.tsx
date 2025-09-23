@@ -9,7 +9,7 @@ export function Header({ onSettingsClick }: HeaderProps) {
   const { theme } = useTheme();
   
   return (
-    <div className="flex items-center justify-between mb-2">
+    <div className="flex items-center justify-between mb-2 px-4 pt-4">
       <div className="flex items-center gap-3">
         <div 
           className="w-2 h-8 rounded-full"
@@ -23,7 +23,7 @@ export function Header({ onSettingsClick }: HeaderProps) {
             className="w-2 h-2 rounded-full animate-pulse"
             style={{ backgroundColor: theme.colors.success }}
           />
-          <span className="text-xs" style={{ color: theme.colors.mutedForeground }}>
+          <span className="text-sm mobile-text-size" style={{ color: theme.colors.mutedForeground }}>
             实时同步
           </span>
         </div>
@@ -31,7 +31,7 @@ export function Header({ onSettingsClick }: HeaderProps) {
       
       <button
         onClick={onSettingsClick}
-        className="p-2 rounded-xl transition-all duration-300 hover:scale-105"
+        className="touch-target rounded-xl transition-all duration-300 hover:scale-105"
         style={{
           backgroundColor: theme.colors.card,
           borderColor: theme.colors.cardBorder,
@@ -39,7 +39,7 @@ export function Header({ onSettingsClick }: HeaderProps) {
         }}
         aria-label="设置"
       >
-        <Settings className="w-5 h-5" />
+        <Settings className="w-6 h-6" />
       </button>
     </div>
   );

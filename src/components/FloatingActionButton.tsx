@@ -130,7 +130,10 @@ export function FloatingActionButton({ onAddTask, onImportICS, onFileStorage, on
   const styles = getButtonStyles();
 
   return (
-    <div className="fixed right-4 bottom-6 z-50">
+    <div className="fixed z-50" style={{ 
+      right: `calc(16px + env(safe-area-inset-right))`,
+      bottom: `calc(24px + env(safe-area-inset-bottom))`
+    }}>
       {/* Enhanced Backdrop */}
       {isExpanded && (
         <>
@@ -275,9 +278,9 @@ export function FloatingActionButton({ onAddTask, onImportICS, onFileStorage, on
         )}
       </div>
 
-      {/* Main FAB - Made smaller and more transparent */}
+      {/* Main FAB - Mobile optimized */}
       <button
-        className="group relative w-12 h-12 rounded-xl transition-all duration-300 hover:scale-110 active:scale-95 overflow-hidden"
+        className="group relative touch-target rounded-xl transition-all duration-300 hover:scale-110 active:scale-95 overflow-hidden"
         style={{
           background: styles.main.background,
           boxShadow: isExpanded ? styles.main.hoverShadow : styles.main.shadow,

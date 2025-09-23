@@ -89,23 +89,23 @@ export function EventBooksList({ onSelectBook, onCreateBook, onSettingsClick, on
 
   return (
     <div 
-      className="min-h-screen pb-24"
+      className="full-screen-bg no-bounce"
       style={{ background: theme.styles.backgroundImage }}
     >
       {/* Header */}
-      <div className="flex items-center justify-between p-4 pt-8 mb-6">
+      <div className="flex items-center justify-between px-4 mb-6 pt-4">
         <div>
-          <h1 className="text-2xl mb-1" style={{ color: theme.colors.foreground }}>
+          <h1 className="text-2xl mb-1 mobile-text-size" style={{ color: theme.colors.foreground }}>
             {t.eventBooks.title}
           </h1>
-          <p className="text-sm" style={{ color: theme.colors.mutedForeground }}>
+          <p className="text-sm mobile-text-size" style={{ color: theme.colors.mutedForeground }}>
             {t.eventBooks.subtitle}
           </p>
         </div>
         
         <button
           onClick={onSettingsClick}
-          className="w-10 h-10 rounded-xl flex flex-col items-center justify-center gap-0.5 transition-all duration-200 hover:scale-105 active:scale-95"
+          className="touch-target rounded-xl flex flex-col items-center justify-center gap-0.5 transition-all duration-200 hover:scale-105 active:scale-95"
           style={{
             backgroundColor: theme.colors.card,
             border: `1px solid ${theme.colors.cardBorder}`,
@@ -118,7 +118,7 @@ export function EventBooksList({ onSelectBook, onCreateBook, onSettingsClick, on
       </div>
 
       {/* Event Books Grid */}
-      <div className="px-4 space-y-4">
+      <div className="px-4 space-y-4 mobile-scroll pb-24">
         {/* View All Tasks Button */}
         <button
           onClick={onViewAllTasks}

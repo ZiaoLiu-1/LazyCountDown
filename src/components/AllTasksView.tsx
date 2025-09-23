@@ -470,13 +470,13 @@ export function AllTasksView({
 
   return (
     <div 
-      className="min-h-screen pb-24 relative"
+      className="full-screen-bg relative"
       style={{ background: theme.styles.backgroundImage }}
     >
       <CloudDecoration />
       
       {/* Header */}
-      <div className="relative z-10 px-4 pt-6 pb-2">
+      <div className="relative z-10 px-4 pb-2 pt-4">
         <div className="flex items-center justify-between mb-6">
           <button
             onClick={onBack}
@@ -523,7 +523,7 @@ export function AllTasksView({
         </div>
       </div>
       
-      <div className="relative z-10 px-4 space-y-6">
+      <div className="relative z-10 px-4 space-y-6 pb-24">
         {/* Filter Controls */}
         <div className="space-y-4">
           {/* Event Book Filter - Now first row */}
