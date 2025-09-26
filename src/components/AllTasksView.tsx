@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { ArrowLeft, GraduationCap, Home, Dumbbell, Briefcase, BookOpen, Heart, Filter, CheckCircle2, AlertTriangle, Clock } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
 import { FilterChips } from './FilterChips';
@@ -220,6 +220,11 @@ export function AllTasksView({
   const { theme, t, currentLanguage } = useTheme();
   const [currentFilter, setCurrentFilter] = useState<FilterType>('all');
   const [selectedEventBookFilter, setSelectedEventBookFilter] = useState<string>('all');
+
+  // Reset scroll position to top when component mounts
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
   
   const { tasks, eventBooks } = getAllTasks(currentLanguage);
 
@@ -482,7 +487,7 @@ export function AllTasksView({
       {/* Header */}
       <div
         className="relative z-10 pb-2"
-        style={safeAreaPadding({ top: 44, left: 16, right: 16 })}
+        style={safeAreaPadding({ top: 18, left: 16, right: 16 })}
       >
         <div className="flex items-center justify-between mb-6">
           <button

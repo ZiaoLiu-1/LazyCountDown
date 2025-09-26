@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { ArrowLeft, Plus, Trash2, Edit3, Tag, AlertTriangle, Folder } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
 import { CloudDecoration } from './CloudDecoration';
@@ -38,6 +38,11 @@ export function CategoryManagement({ eventBook, onBack }: CategoryManagementProp
     mockCategories.filter(cat => cat.eventBookId === eventBook.id)
   );
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+
+  // Reset scroll position to top when component mounts
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
   const [categoryToDelete, setCategoryToDelete] = useState<Category | null>(null);
   const [deleteOption, setDeleteOption] = useState<'keep' | 'delete'>('keep');
   const [showAddForm, setShowAddForm] = useState(false);
@@ -106,7 +111,7 @@ export function CategoryManagement({ eventBook, onBack }: CategoryManagementProp
       {/* Header */}
       <div
         className="relative z-10 pb-2"
-        style={safeAreaPadding({ top: 44, left: 16, right: 16 })}
+        style={safeAreaPadding({ top: 18, left: 16, right: 16 })}
       >
         <div className="flex items-center justify-between mb-6">
           <button
@@ -406,7 +411,7 @@ export function CategoryManagement({ eventBook, onBack }: CategoryManagementProp
       {showDeleteDialog && categoryToDelete && (
         <div
           className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
-          style={safeAreaPadding({ top: 44, bottom: 24, left: 16, right: 16 })}
+          style={safeAreaPadding({ top: 18, bottom: 24, left: 16, right: 16 })}
         >
           <div 
             className={`w-full max-w-md p-6 rounded-2xl border ${theme.styles.cardStyle}`}

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { ArrowLeft, Check, GraduationCap, Home, Dumbbell, Briefcase, BookOpen, Heart, Palette, Camera, Music, Coffee, Car, Plane } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
 import { safeAreaPadding } from '../utils/safeArea';
@@ -41,6 +41,11 @@ export function CreateEventBook({ onBack, onSave }: CreateEventBookProps) {
   const [selectedIcon, setSelectedIcon] = useState('book-open');
   const [selectedColor, setSelectedColor] = useState('#3B82F6');
 
+  // Reset scroll position to top when component mounts
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   const handleSave = () => {
     if (name.trim()) {
       onSave({
@@ -66,7 +71,7 @@ export function CreateEventBook({ onBack, onSave }: CreateEventBookProps) {
       <div
         className="flex items-center justify-between mb-6"
         style={{
-          ...safeAreaPadding({ top: 44, left: 16, right: 16 }),
+          ...safeAreaPadding({ top: 18, left: 16, right: 16 }),
           paddingBottom: 16
         }}
       >

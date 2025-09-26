@@ -1697,6 +1697,26 @@
     font-size: max(16px, 1rem); /* Prevent zoom on iOS */
   }
 
+  .mobile-text-size-small {
+    font-size: max(14px, 0.875rem); /* Prevent zoom on iOS - small text */
+  }
+
+  .mobile-text-size-large {
+    font-size: max(24px, 1.5rem); /* Prevent zoom on iOS - large text */
+  }
+
+  .mobile-text-size-xl {
+    font-size: max(28px, 1.75rem); /* Prevent zoom on iOS - extra large text */
+  }
+
+  .mobile-text-size-2xl {
+    font-size: max(32px, 2rem); /* Prevent zoom on iOS - 2xl text */
+  }
+
+  .mobile-text-size-3xl {
+    font-size: max(36px, 2.25rem); /* Prevent zoom on iOS - 3xl text */
+  }
+
   /* Prevent bounce scrolling on iOS */
   .no-bounce {
     overscroll-behavior: none;
@@ -1758,6 +1778,20 @@
     padding-bottom: env(safe-area-inset-bottom);
     padding-left: env(safe-area-inset-left);
     padding-right: env(safe-area-inset-right);
+  }
+
+  /* Force large title size */
+  .ios-large-title {
+    font-size: 40px !important;
+    font-weight: bold !important;
+    line-height: 1.1 !important;
+    display: block !important;
+  }
+
+  .ios-subtitle {
+    font-size: 14px !important;
+    font-weight: normal !important;
+    line-height: 1.4 !important;
   }
 }
 

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { Plus, BookOpen, GraduationCap, Heart, Dumbbell, Briefcase, Home, ChevronRight, Filter } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
 import { formatEventBookName, formatEventBookDescription } from '../utils/dateUtils';
@@ -98,19 +98,37 @@ export function EventBooksList({ onSelectBook, onCreateBook, onSettingsClick, on
     >
       {/* Header */}
       <div
-        className="flex items-center justify-between mb-6"
-        style={safeAreaPadding({ top: 44, left: 16, right: 16 })}
+        className="mb-6"
+        style={safeAreaPadding({ top: 18, left: 16, right: 16 })}
       >
-        <div>
-          <h1 className="text-3xl mb-1 mobile-text-size" style={{ color: theme.colors.foreground }}>
-            {t.eventBooks.title}
-          </h1>
-          <p className="text-sm mobile-text-size" style={{ color: theme.colors.mutedForeground }}>
-            {t.eventBooks.subtitle}
-          </p>
-        </div>
-        
-        <button
+        <div className="flex items-center justify-between">
+          <div style={{ flex: 1 }}>
+            <div
+              style={{
+                color: theme.colors.foreground,
+                fontSize: '40px',
+                fontWeight: 'bold',
+                lineHeight: '1.1',
+                marginBottom: '4px',
+                fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", "Inter", "Helvetica Neue", Arial, sans-serif'
+              }}
+            >
+              {t.eventBooks.title}
+            </div>
+            <div
+              style={{
+                color: theme.colors.mutedForeground,
+                fontSize: '14px',
+                fontWeight: 'normal',
+                lineHeight: '1.4',
+                fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", "Inter", "Helvetica Neue", Arial, sans-serif'
+              }}
+            >
+              {t.eventBooks.subtitle}
+            </div>
+          </div>
+
+          <button
           onClick={onSettingsClick}
           className="touch-target rounded-xl flex flex-col items-center justify-center gap-0.5 transition-all duration-200 hover:scale-105 active:scale-95"
           style={{
@@ -122,6 +140,7 @@ export function EventBooksList({ onSelectBook, onCreateBook, onSettingsClick, on
           <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: theme.colors.mutedForeground }} />
           <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: theme.colors.mutedForeground }} />
         </button>
+        </div>
       </div>
 
       {/* Event Books Grid */}

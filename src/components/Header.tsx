@@ -12,7 +12,7 @@ export function Header({ onSettingsClick }: HeaderProps) {
   return (
     <div
       className="flex items-center justify-between mb-2"
-      style={safeAreaPadding({ top: 16, left: 16, right: 16 })}
+      style={safeAreaPadding({ top: 18, left: 16, right: 16 })}
     >
       <div className="flex items-center gap-3">
         <div 

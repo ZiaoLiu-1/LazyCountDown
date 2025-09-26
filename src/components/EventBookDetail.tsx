@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { ArrowLeft, GraduationCap, Home, Dumbbell, Briefcase, BookOpen, Heart, FolderOpen, Tag } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
 import { FilterChips } from './FilterChips';
@@ -405,6 +405,11 @@ export function EventBookDetail({
 }: EventBookDetailProps) {
   const { theme, t, currentLanguage } = useTheme();
   const [currentFilter, setCurrentFilter] = useState<FilterType>('all');
+
+  // Reset scroll position to top when component mounts
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
   
   const { oneTime: oneTimeTasks, recurring: recurringTasks } = getTasksForEventBook(eventBook.id, currentLanguage);
   const allTasks = [...oneTimeTasks, ...recurringTasks];
@@ -447,7 +452,7 @@ export function EventBookDetail({
       {/* Header */}
       <div
         className="relative z-10 pb-2"
-        style={safeAreaPadding({ top: 44, left: 16, right: 16 })}
+        style={safeAreaPadding({ top: 18, left: 16, right: 16 })}
       >
         <div className="flex items-center justify-between mb-6">
           <button

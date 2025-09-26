@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { ArrowLeft, Check, Trash2, Calendar, Clock, Star, RefreshCw } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
 import { safeAreaInset, safeAreaPadding } from '../utils/safeArea';
@@ -29,6 +29,11 @@ export function TaskDetail({ task, onBack, onSave, onDelete, onComplete }: TaskD
   const [description, setDescription] = useState(task?.description || '');
   const [deadline, setDeadline] = useState(task?.deadline || '2025-11-13');
   const [deadlineTime, setDeadlineTime] = useState('00:00');
+
+  // Reset scroll position to top when component mounts
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
   const [taskType, setTaskType] = useState<'一次性' | '循环'>(task?.type || '一次性');
   const [priority, setPriority] = useState(task?.priority || 'medium');
   const [category, setCategory] = useState(task?.category || 'pending'); // 默认为"进行中"
@@ -88,7 +93,7 @@ export function TaskDetail({ task, onBack, onSave, onDelete, onComplete }: TaskD
       <div
         className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between border-b"
         style={{
-          ...safeAreaPadding({ top: 16, left: 16, right: 16 }),
+          ...safeAreaPadding({ top: 18, left: 16, right: 16 }),
           paddingBottom: 16,
           backgroundColor: theme.colors.background + 'F0', // 半透明背景
           backdropFilter: 'blur(10px)',
