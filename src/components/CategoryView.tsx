@@ -1,6 +1,8 @@
 import { ArrowLeft, Clock, CheckCircle, AlertCircle, BookOpen } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
+import { safeAreaPadding } from '../utils/safeArea';
 import { TaskCard } from './TaskCard';
+import { SystemCategoryId, isSystemCategory, getCustomCategoryLabel, getCustomCategoryMetadata } from '../data/categories';
 
 interface Task {
   id: string;
@@ -13,9 +15,10 @@ interface Task {
   duration?: string;
   priority?: 'high' | 'medium' | 'low';
   category?: string;
+  status: SystemCategoryId;
 }
 
-type FilterType = 'all' | 'completed' | 'pending' | 'overdue' | 'csc3';
+type FilterType = 'all' | SystemCategoryId | string;
 
 interface CategoryViewProps {
   category: FilterType;
@@ -48,34 +51,54 @@ const categoryConfig = {
     description: '已经超过截止时间的任务',
     icon: <AlertCircle className="w-8 h-8" />,
     color: '#EF4444'
-  },
-  csc3: {
-    name: 'CSC3',
-    description: '计算机科学课程相关任务',
-    icon: <BookOpen className="w-8 h-8" />,
-    color: '#8B5CF6'
   }
-};
+} as const;
 
 export function CategoryView({ category, tasks, onBack, onTaskClick }: CategoryViewProps) {
-  const { theme } = useTheme();
-  const config = categoryConfig[category];
+  const { theme, currentLanguage } = useTheme();
+  const baseConfig = category === 'all' || isSystemCategory(category)
+    ? categoryConfig[category as keyof typeof categoryConfig]
+    : undefined;
+  const customMetadata = !baseConfig && category !== 'all'
+    ? getCustomCategoryMetadata(category)
+    : undefined;
+  const config = baseConfig || {
+    name: getCustomCategoryLabel(category, currentLanguage) || category,
+    description: currentLanguage === 'zh'
+      ? '查看此自定义分类下的所有任务'
+      : 'Review every task saved in this custom folder',
+    icon: <BookOpen className="w-8 h-8" />,
+    color: customMetadata?.color || theme.colors.primary
+  };
 
   // Filter tasks based on category
-  const filteredTasks = category === 'all' 
-    ? tasks 
-    : tasks.filter(task => task.category === category);
+  const filteredTasks = category === 'all'
+    ? tasks
+    : tasks.filter(task =>
+        isSystemCategory(category)
+          ? task.status === category
+          : task.category === category
+      );
 
   const oneTimeTasks = filteredTasks.filter(task => task.type === '一次性');
   const recurringTasks = filteredTasks.filter(task => task.type === '循环');
 
   return (
-    <div 
-      className="min-h-screen pb-24"
-      style={{ background: theme.styles.backgroundImage }}
+    <div
+      className="full-screen-bg"
+      style={{
+        background: theme.styles.backgroundImage,
+        ...safeAreaPadding({ bottom: 96 })
+      }}
     >
       {/* Header */}
-      <div className="flex items-center justify-between p-4 pt-6 mb-6">
+      <div
+        className="flex items-center justify-between mb-6"
+        style={{
+          ...safeAreaPadding({ top: 24, left: 16, right: 16 }),
+          paddingBottom: 16
+        }}
+      >
         <button
           onClick={onBack}
           className="flex items-center gap-2 transition-colors"
@@ -88,7 +111,10 @@ export function CategoryView({ category, tasks, onBack, onTaskClick }: CategoryV
         <div className="flex-1" />
       </div>
 
-      <div className="px-4 space-y-6">
+      <div
+        className="space-y-6"
+        style={safeAreaPadding({ left: 16, right: 16 })}
+      >
         {/* Category Header */}
         <div 
           className={`p-6 rounded-3xl border ${theme.styles.cardStyle}`}
@@ -163,7 +189,16 @@ export function CategoryView({ category, tasks, onBack, onTaskClick }: CategoryV
                   {oneTimeTasks.map((task) => (
                     <TaskCard
                       key={task.id}
-                      task={task}
+                      countdown={task.countdown}
+                      deadline={task.deadline}
+                      title={task.title}
+                      description={task.description}
+                      folderColor={task.folderColor}
+                      type={task.type}
+                      duration={task.duration}
+                      category={task.category}
+                      status={task.status}
+                      priority={task.priority}
                       onClick={() => onTaskClick(task)}
                     />
                   ))}
@@ -181,7 +216,16 @@ export function CategoryView({ category, tasks, onBack, onTaskClick }: CategoryV
                   {recurringTasks.map((task) => (
                     <TaskCard
                       key={task.id}
-                      task={task}
+                      countdown={task.countdown}
+                      deadline={task.deadline}
+                      title={task.title}
+                      description={task.description}
+                      folderColor={task.folderColor}
+                      type={task.type}
+                      duration={task.duration}
+                      category={task.category}
+                      status={task.status}
+                      priority={task.priority}
                       onClick={() => onTaskClick(task)}
                     />
                   ))}

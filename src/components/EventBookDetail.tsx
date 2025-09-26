@@ -6,8 +6,10 @@ import { StatsCards } from './StatsCards';
 import { TaskSection } from './TaskSection';
 import { FloatingActionButton } from './FloatingActionButton';
 import { CloudDecoration } from './CloudDecoration';
+import { safeAreaPadding } from '../utils/safeArea';
 import { EventBook } from './EventBooksList';
 import { formatCountdown, formatEventBookName, formatEventBookDescription } from '../utils/dateUtils';
+import { SystemCategoryId, isSystemCategory } from '../data/categories';
 
 interface Task {
   id: string;
@@ -20,10 +22,11 @@ interface Task {
   duration?: string;
   priority?: 'high' | 'medium' | 'low';
   category?: string;
+  status: SystemCategoryId;
   eventBookId: string;
 }
 
-type FilterType = 'all' | 'completed' | 'pending' | 'overdue' | 'csc3';
+type FilterType = 'all' | SystemCategoryId | string;
 
 interface EventBookDetailProps {
   eventBook: EventBook;
@@ -170,7 +173,8 @@ const getTasksForEventBook = (eventBookId: string, language: 'zh' | 'en'): { one
           folderColor: '#3B82F6',
           type: '一次性' as const,
           priority: 'high' as const,
-          category: 'csc3', // 将这个任务改为CSC3分类
+          category: 'csc3',
+          status: 'pending',
           eventBookId: 'university'
         },
         {
@@ -182,7 +186,8 @@ const getTasksForEventBook = (eventBookId: string, language: 'zh' | 'en'): { one
           folderColor: '#F59E0B',
           type: '一次性' as const,
           priority: 'high' as const,
-          category: 'pending',
+          category: 'projects',
+          status: 'pending',
           eventBookId: 'university'
         },
         {
@@ -194,7 +199,8 @@ const getTasksForEventBook = (eventBookId: string, language: 'zh' | 'en'): { one
           folderColor: '#EF4444',
           type: '一次性' as const,
           priority: 'medium' as const,
-          category: 'pending',
+          category: 'math',
+          status: 'pending',
           eventBookId: 'university'
         },
         {
@@ -206,7 +212,8 @@ const getTasksForEventBook = (eventBookId: string, language: 'zh' | 'en'): { one
           folderColor: '#10B981',
           type: '一次性' as const,
           priority: 'medium' as const,
-          category: 'completed',
+          category: 'csc3',
+          status: 'completed',
           eventBookId: 'university'
         },
         {
@@ -218,7 +225,8 @@ const getTasksForEventBook = (eventBookId: string, language: 'zh' | 'en'): { one
           folderColor: '#EF4444',
           type: '一次性' as const,
           priority: 'high' as const,
-          category: 'overdue',
+          category: 'math',
+          status: 'overdue',
           eventBookId: 'university'
         }
       ],
@@ -232,7 +240,8 @@ const getTasksForEventBook = (eventBookId: string, language: 'zh' | 'en'): { one
           type: '循环' as const,
           duration: language === 'zh' ? '2小时' : '2 hours',
           priority: 'medium' as const,
-          category: 'pending',
+          category: 'projects',
+          status: 'pending',
           eventBookId: 'university'
         }
       ]
@@ -248,7 +257,8 @@ const getTasksForEventBook = (eventBookId: string, language: 'zh' | 'en'): { one
           folderColor: '#F59E0B',
           type: '一次性' as const,
           priority: 'high' as const,
-          category: 'pending',
+          category: 'family',
+          status: 'pending',
           eventBookId: 'life'
         },
         {
@@ -260,7 +270,8 @@ const getTasksForEventBook = (eventBookId: string, language: 'zh' | 'en'): { one
           folderColor: '#10B981',
           type: '一次性' as const,
           priority: 'medium' as const,
-          category: 'pending',
+          category: 'wellness',
+          status: 'pending',
           eventBookId: 'life'
         },
         {
@@ -272,7 +283,8 @@ const getTasksForEventBook = (eventBookId: string, language: 'zh' | 'en'): { one
           folderColor: '#10B981',
           type: '一次性' as const,
           priority: 'medium' as const,
-          category: 'completed',
+          category: 'family',
+          status: 'completed',
           eventBookId: 'life'
         }
       ],
@@ -286,7 +298,8 @@ const getTasksForEventBook = (eventBookId: string, language: 'zh' | 'en'): { one
           type: '循环' as const,
           duration: language === 'zh' ? '2小时' : '2 hours',
           priority: 'low' as const,
-          category: 'pending',
+          category: 'wellness',
+          status: 'pending',
           eventBookId: 'life'
         }
       ]
@@ -302,7 +315,8 @@ const getTasksForEventBook = (eventBookId: string, language: 'zh' | 'en'): { one
           folderColor: '#F59E0B',
           type: '一次性' as const,
           priority: 'medium' as const,
-          category: 'pending',
+          category: 'strength',
+          status: 'pending',
           eventBookId: 'fitness'
         },
         {
@@ -314,7 +328,8 @@ const getTasksForEventBook = (eventBookId: string, language: 'zh' | 'en'): { one
           folderColor: '#EF4444',
           type: '一次性' as const,
           priority: 'high' as const,
-          category: 'overdue',
+          category: 'strength',
+          status: 'overdue',
           eventBookId: 'fitness'
         }
       ],
@@ -328,7 +343,8 @@ const getTasksForEventBook = (eventBookId: string, language: 'zh' | 'en'): { one
           type: '循环' as const,
           duration: language === 'zh' ? '1.5小时' : '1.5 hours',
           priority: 'high' as const,
-          category: 'pending',
+          category: 'cardio',
+          status: 'pending',
           eventBookId: 'fitness'
         }
       ]
@@ -344,7 +360,8 @@ const getTasksForEventBook = (eventBookId: string, language: 'zh' | 'en'): { one
           folderColor: '#8B5CF6',
           type: '一次性' as const,
           priority: 'high' as const,
-          category: 'pending',
+          category: 'product',
+          status: 'pending',
           eventBookId: 'work'
         },
         {
@@ -356,7 +373,8 @@ const getTasksForEventBook = (eventBookId: string, language: 'zh' | 'en'): { one
           folderColor: '#3B82F6',
           type: '一次性' as const,
           priority: 'medium' as const,
-          category: 'pending',
+          category: 'product',
+          status: 'pending',
           eventBookId: 'work'
         },
         {
@@ -368,7 +386,8 @@ const getTasksForEventBook = (eventBookId: string, language: 'zh' | 'en'): { one
           folderColor: '#10B981',
           type: '一次性' as const,
           priority: 'medium' as const,
-          category: 'completed',
+          category: 'product',
+          status: 'completed',
           eventBookId: 'work'
         }
       ],
@@ -382,7 +401,8 @@ const getTasksForEventBook = (eventBookId: string, language: 'zh' | 'en'): { one
           type: '循环' as const,
           duration: language === 'zh' ? '1小时' : '1 hour',
           priority: 'medium' as const,
-          category: 'pending',
+          category: 'meetings',
+          status: 'pending',
           eventBookId: 'work'
         }
       ]
@@ -425,7 +445,11 @@ export function EventBookDetail({
   // Filter tasks based on current filter
   const getFilteredTasks = (tasks: Task[]) => {
     if (currentFilter === 'all') return tasks;
-    return tasks.filter(task => task.category === currentFilter);
+    return tasks.filter(task =>
+      isSystemCategory(currentFilter)
+        ? task.status === currentFilter
+        : task.category === currentFilter
+    );
   };
 
   const filteredOneTimeTasks = getFilteredTasks(oneTimeTasks);
@@ -434,14 +458,20 @@ export function EventBookDetail({
   const IconComponent = getIconComponent(eventBook.icon);
 
   return (
-    <div 
-      className="min-h-screen pb-24 relative"
-      style={{ background: theme.styles.backgroundImage }}
+    <div
+      className="full-screen-bg relative"
+      style={{
+        background: theme.styles.backgroundImage,
+        ...safeAreaPadding({ bottom: 96 })
+      }}
     >
       <CloudDecoration />
-      
+
       {/* Header */}
-      <div className="relative z-10 px-4 pt-6 pb-2">
+      <div
+        className="relative z-10 pb-2"
+        style={safeAreaPadding({ top: 24, left: 16, right: 16 })}
+      >
         <div className="flex items-center justify-between mb-6">
           <button
             onClick={onBack}
@@ -488,7 +518,10 @@ export function EventBookDetail({
         </div>
       </div>
       
-      <div className="relative z-10 px-4 space-y-6">
+      <div
+        className="relative z-10 space-y-6"
+        style={safeAreaPadding({ left: 16, right: 16 })}
+      >
         <FilterChips 
           tasks={allTasks}
           selectedFilter={currentFilter}

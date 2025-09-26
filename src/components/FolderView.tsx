@@ -1,7 +1,9 @@
 import { useState } from 'react';
 import { ArrowLeft, Edit3, Check, X, Folder, Clock, CheckCircle } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
+import { safeAreaPadding } from '../utils/safeArea';
 import { TaskCard } from './TaskCard';
+import { SystemCategoryId } from '../data/categories';
 
 interface Task {
   id: string;
@@ -14,6 +16,7 @@ interface Task {
   duration?: string;
   priority?: 'high' | 'medium' | 'low';
   category?: string;
+  status: SystemCategoryId;
 }
 
 interface Folder {
@@ -65,12 +68,21 @@ export function FolderView({ folder, tasks, onBack, onTaskClick, onUpdateFolder 
   const recurringTasks = folderTasks.filter(task => task.type === '循环');
 
   return (
-    <div 
-      className="min-h-screen pb-24"
-      style={{ background: theme.styles.backgroundImage }}
+    <div
+      className="full-screen-bg"
+      style={{
+        background: theme.styles.backgroundImage,
+        ...safeAreaPadding({ bottom: 96 })
+      }}
     >
       {/* Header */}
-      <div className="flex items-center justify-between p-4 pt-6 mb-6">
+      <div
+        className="flex items-center justify-between mb-6"
+        style={{
+          ...safeAreaPadding({ top: 24, left: 16, right: 16 }),
+          paddingBottom: 16
+        }}
+      >
         <button
           onClick={onBack}
           className="flex items-center gap-2 transition-colors"
@@ -83,7 +95,10 @@ export function FolderView({ folder, tasks, onBack, onTaskClick, onUpdateFolder 
         <div className="flex-1" />
       </div>
 
-      <div className="px-4 space-y-6">
+      <div
+        className="space-y-6"
+        style={safeAreaPadding({ left: 16, right: 16 })}
+      >
         {/* Folder Header */}
         <div 
           className={`p-6 rounded-3xl border ${theme.styles.cardStyle}`}
@@ -261,7 +276,16 @@ export function FolderView({ folder, tasks, onBack, onTaskClick, onUpdateFolder 
                   {oneTimeTasks.map((task) => (
                     <TaskCard
                       key={task.id}
-                      task={task}
+                      countdown={task.countdown}
+                      deadline={task.deadline}
+                      title={task.title}
+                      description={task.description}
+                      folderColor={task.folderColor}
+                      type={task.type}
+                      duration={task.duration}
+                      category={task.category}
+                      status={task.status}
+                      priority={task.priority}
                       onClick={() => onTaskClick(task)}
                     />
                   ))}
@@ -279,7 +303,16 @@ export function FolderView({ folder, tasks, onBack, onTaskClick, onUpdateFolder 
                   {recurringTasks.map((task) => (
                     <TaskCard
                       key={task.id}
-                      task={task}
+                      countdown={task.countdown}
+                      deadline={task.deadline}
+                      title={task.title}
+                      description={task.description}
+                      folderColor={task.folderColor}
+                      type={task.type}
+                      duration={task.duration}
+                      category={task.category}
+                      status={task.status}
+                      priority={task.priority}
                       onClick={() => onTaskClick(task)}
                     />
                   ))}

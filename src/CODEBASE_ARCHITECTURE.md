@@ -403,7 +403,7 @@ interface EventBook {
 }
 
 // 筛选类型
-type FilterType = 'all' | 'completed' | 'pending' | 'overdue' | 'csc3';
+type FilterType = 'all' | SystemCategoryId | string;
 
 // 主题类型
 type ThemeType = 'dark' | 'rose' | 'blue' | 'morandi';

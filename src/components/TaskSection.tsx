@@ -1,5 +1,6 @@
 import { TaskCard } from './TaskCard';
 import { useTheme } from '../contexts/ThemeContext';
+import { SystemCategoryId } from '../data/categories';
 
 interface Task {
   id: string;
@@ -12,6 +13,7 @@ interface Task {
   duration?: string;
   priority?: 'high' | 'medium' | 'low';
   category?: string;
+  status: SystemCategoryId;
 }
 
 interface TaskSectionProps {
@@ -58,11 +60,12 @@ export function TaskSection({ title, tasks, onTaskClick }: TaskSectionProps) {
             description={task.description}
             folderColor={task.folderColor}
             type={task.type}
-            duration={task.duration}
-            category={task.category}
-            priority={task.priority}
-            onClick={() => onTaskClick(task)}
-          />
+          duration={task.duration}
+          category={task.category}
+          status={task.status}
+          priority={task.priority}
+          onClick={() => onTaskClick(task)}
+        />
         ))}
       </div>
     </div>

@@ -1,6 +1,7 @@
 import { Calendar, RefreshCw, Clock, CheckCircle2, AlertTriangle } from "lucide-react";
 import { useTheme } from '../contexts/ThemeContext';
 import { formatCountdown } from '../utils/dateUtils';
+import { SystemCategoryId } from '../data/categories';
 
 interface TaskCardProps {
   countdown: string;
@@ -13,6 +14,7 @@ interface TaskCardProps {
   onClick?: () => void;
   category?: string; // Add category prop to determine task status
   priority?: 'high' | 'medium' | 'low';
+  status?: SystemCategoryId;
 }
 
 export function TaskCard({
@@ -25,12 +27,14 @@ export function TaskCard({
   duration,
   onClick,
   category = 'pending',
-  priority = 'medium'
+  priority = 'medium',
+  status = 'pending'
 }: TaskCardProps) {
   const { theme, t, currentLanguage } = useTheme();
   const isRecurring = type === '循环';
-  const isCompleted = category === 'completed';
-  const isOverdue = category === 'overdue';
+  const taskStatus = status || 'pending';
+  const isCompleted = taskStatus === 'completed';
+  const isOverdue = taskStatus === 'overdue';
   
   // Format countdown text based on current language 
   const formattedCountdown = formatCountdown(countdown, currentLanguage);

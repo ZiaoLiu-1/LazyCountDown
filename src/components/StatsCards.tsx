@@ -31,7 +31,7 @@ export function StatsCards() {
     },
     {
       id: 'efficiency',
-      label: t.filterTypes.csc3,
+      label: t.eventBookDetail.efficiency,
       value: '92%',
       icon: TrendingUp,
       trend: '+8%',

@@ -1,4 +1,5 @@
 import { useTheme } from '../contexts/ThemeContext';
+import { SYSTEM_CATEGORY_IDS, SystemCategoryId, isSystemCategory, getCustomCategoryLabel } from '../data/categories';
 
 interface Task {
   id: string;
@@ -11,9 +12,10 @@ interface Task {
   duration?: string;
   priority?: 'high' | 'medium' | 'low';
   category?: string;
+  status: SystemCategoryId;
 }
 
-type FilterType = 'all' | 'completed' | 'pending' | 'overdue' | 'csc3';
+type FilterType = 'all' | SystemCategoryId | string;
 
 interface FilterChipsProps {
   tasks: Task[];
@@ -22,58 +24,49 @@ interface FilterChipsProps {
 }
 
 export function FilterChips({ tasks, selectedFilter, onFilterChange }: FilterChipsProps) {
-  const { theme, t } = useTheme();
+  const { theme, t, currentLanguage } = useTheme();
   
   const getTaskCount = (filter: FilterType) => {
     if (filter === 'all') return tasks.length;
+    if (isSystemCategory(filter)) {
+      return tasks.filter(task => task.status === filter).length;
+    }
     return tasks.filter(task => task.category === filter).length;
   };
 
   // 动态获取所有存在的分类
   const getAllCategories = () => {
-    const categoriesInTasks = new Set(tasks.map(task => task.category).filter(Boolean));
-    
-    // 基础分类（始终显示）
-    const baseFilters = [
-      { id: 'all' as FilterType, label: t.filterTypes.all, count: getTaskCount('all') }
+    const customCategoryIds = Array.from(
+      new Set(tasks.map(task => task.category).filter(Boolean))
+    ) as string[];
+
+    const filters: { id: FilterType; label: string; count: number }[] = [
+      { id: 'all', label: t.filterTypes.all, count: getTaskCount('all') }
     ];
 
-    // 系统分类（只在有任务时显示）
-    const systemCategories = [
-      { id: 'completed' as FilterType, label: t.filterTypes.completed },
-      { id: 'pending' as FilterType, label: t.filterTypes.pending },
-      { id: 'overdue' as FilterType, label: t.filterTypes.overdue }
-    ];
-
-    // 自定义分类（CSC3等）
-    const customCategories = [
-      { id: 'csc3' as FilterType, label: t.filterTypes.csc3 }
-    ];
-
-    // 收集所有有任务的分类
-    const availableFilters = baseFilters;
-
-    // 添加系统分类（如果有对应任务）
-    systemCategories.forEach(category => {
-      if (categoriesInTasks.has(category.id)) {
-        availableFilters.push({
-          ...category,
-          count: getTaskCount(category.id)
+    SYSTEM_CATEGORY_IDS.forEach((categoryId) => {
+      const count = getTaskCount(categoryId);
+      if (count > 0) {
+        filters.push({
+          id: categoryId,
+          label: t.filterTypes[categoryId],
+          count
         });
       }
     });
 
-    // 添加自定义分类（如果有对应任务）
-    customCategories.forEach(category => {
-      if (categoriesInTasks.has(category.id)) {
-        availableFilters.push({
-          ...category,
-          count: getTaskCount(category.id)
+    customCategoryIds.forEach((categoryId) => {
+      const count = getTaskCount(categoryId);
+      if (count > 0) {
+        filters.push({
+          id: categoryId,
+          label: getCustomCategoryLabel(categoryId, currentLanguage) || categoryId,
+          count
         });
       }
     });
 
-    return availableFilters;
+    return filters;
   };
 
   const filterOptions = getAllCategories();

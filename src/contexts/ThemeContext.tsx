@@ -114,8 +114,7 @@ const texts = {
       'all': '全部',
       'completed': '已完成',
       'pending': '进行中',
-      'overdue': '逾期',
-      'csc3': '效率'
+      'overdue': '逾期'
     },
     allTasks: {
       title: '全部任务',
@@ -328,8 +327,7 @@ const texts = {
       'all': 'All',
       'completed': 'Completed',
       'pending': 'In Progress',
-      'overdue': 'Overdue',
-      'csc3': 'Efficiency'
+      'overdue': 'Overdue'
     },
     allTasks: {
       title: 'All Tasks',

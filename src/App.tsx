@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { ThemeProvider } from './contexts/ThemeContext';
 import { useTheme } from './contexts/ThemeContext';
+import { SystemCategoryId } from './data/categories';
 import { EventBooksList, EventBook } from './components/EventBooksList';
 import { EventBookDetail } from './components/EventBookDetail';
 import { CreateEventBook } from './components/CreateEventBook';
@@ -22,10 +23,11 @@ interface Task {
   duration?: string;
   priority?: 'high' | 'medium' | 'low';
   category?: string;
+  status: SystemCategoryId;
   eventBookId: string; // Add this field
 }
 
-type FilterType = 'all' | 'completed' | 'pending' | 'overdue' | 'csc3';
+type FilterType = 'all' | SystemCategoryId | string;
 
 function AppContent() {
   const { theme } = useTheme();

@@ -8,6 +8,8 @@ import { FloatingActionButton } from './FloatingActionButton';
 import { CloudDecoration } from './CloudDecoration';
 import { EventBookFilterChips } from './EventBookFilterChips';
 import { formatCountdown, formatEventBookName, formatEventBookDescription } from '../utils/dateUtils';
+import { safeAreaInset, safeAreaPadding } from '../utils/safeArea';
+import { SystemCategoryId, isSystemCategory } from '../data/categories';
 
 interface Task {
   id: string;
@@ -20,6 +22,7 @@ interface Task {
   duration?: string;
   priority?: 'high' | 'medium' | 'low';
   category?: string;
+  status: SystemCategoryId;
   eventBookId: string;
 }
 
@@ -34,7 +37,7 @@ interface EventBook {
   createdAt: string;
 }
 
-type FilterType = 'all' | 'completed' | 'pending' | 'overdue' | 'csc3';
+type FilterType = 'all' | SystemCategoryId | string;
 
 interface AllTasksViewProps {
   onBack: () => void;
@@ -180,29 +183,29 @@ const getAllTasks = (language: 'zh' | 'en'): { tasks: Task[], eventBooks: EventB
 
   const tasks: Task[] = [
     // University tasks
-    { id: '1', countdown: '55天 15小时', deadline: '2025-11-13', title: getTaskTitle('1', language), description: getTaskDescription('1', language), folderColor: '#3B82F6', type: '一次性', priority: 'high', category: 'pending', eventBookId: 'university' },
-    { id: '2', countdown: '2天 14小时', deadline: '2024-09-21', title: getTaskTitle('2', language), description: getTaskDescription('2', language), folderColor: '#F59E0B', type: '一次性', priority: 'high', category: 'pending', eventBookId: 'university' },
-    { id: '3', countdown: '71天 15小时', deadline: '2025-11-29', title: getTaskTitle('3', language), description: getTaskDescription('3', language), folderColor: '#EF4444', type: '一次性', priority: 'medium', category: 'pending', eventBookId: 'university' },
-    { id: '4', countdown: '已完成', deadline: '2025-09-15', title: getTaskTitle('4', language), description: getTaskDescription('4', language), folderColor: '#10B981', type: '一次性', priority: 'medium', category: 'completed', eventBookId: 'university' },
-    { id: '5', countdown: language === 'zh' ? '每周二 14:00' : 'Tuesdays 2:00 PM', title: getTaskTitle('5', language), description: getTaskDescription('5', language), folderColor: '#3B82F6', type: '循环', duration: language === 'zh' ? '2小时' : '2 hours', priority: 'medium', category: 'pending', eventBookId: 'university' },
-    { id: '14', countdown: '已逾期 3天', deadline: '2024-09-16', title: getTaskTitle('14', language), description: getTaskDescription('14', language), folderColor: '#EF4444', type: '一次性', priority: 'high', category: 'overdue', eventBookId: 'university' },
-    
+    { id: '1', countdown: '55天 15小时', deadline: '2025-11-13', title: getTaskTitle('1', language), description: getTaskDescription('1', language), folderColor: '#3B82F6', type: '一次性', priority: 'high', category: 'csc3', status: 'pending', eventBookId: 'university' },
+    { id: '2', countdown: '2天 14小时', deadline: '2024-09-21', title: getTaskTitle('2', language), description: getTaskDescription('2', language), folderColor: '#F59E0B', type: '一次性', priority: 'high', category: 'projects', status: 'pending', eventBookId: 'university' },
+    { id: '3', countdown: '71天 15小时', deadline: '2025-11-29', title: getTaskTitle('3', language), description: getTaskDescription('3', language), folderColor: '#EF4444', type: '一次性', priority: 'medium', category: 'math', status: 'pending', eventBookId: 'university' },
+    { id: '4', countdown: '已完成', deadline: '2025-09-15', title: getTaskTitle('4', language), description: getTaskDescription('4', language), folderColor: '#10B981', type: '一次性', priority: 'medium', category: 'csc3', status: 'completed', eventBookId: 'university' },
+    { id: '5', countdown: language === 'zh' ? '每周二 14:00' : 'Tuesdays 2:00 PM', title: getTaskTitle('5', language), description: getTaskDescription('5', language), folderColor: '#3B82F6', type: '循环', duration: language === 'zh' ? '2小时' : '2 hours', priority: 'medium', category: 'projects', status: 'pending', eventBookId: 'university' },
+    { id: '14', countdown: '已逾期 3天', deadline: '2024-09-16', title: getTaskTitle('14', language), description: getTaskDescription('14', language), folderColor: '#EF4444', type: '一次性', priority: 'high', category: 'math', status: 'overdue', eventBookId: 'university' },
+
     // Life tasks
-    { id: '6', countdown: '1天 12小时', deadline: '2024-09-20', title: getTaskTitle('6', language), description: getTaskDescription('6', language), folderColor: '#F59E0B', type: '一次性', priority: 'high', category: 'pending', eventBookId: 'life' },
-    { id: '7', countdown: '15天 8小时', deadline: '2025-10-04', title: getTaskTitle('7', language), description: getTaskDescription('7', language), folderColor: '#10B981', type: '一次性', priority: 'medium', category: 'pending', eventBookId: 'life' },
-    { id: '8', countdown: language === 'zh' ? '每周日 10:00' : 'Sundays 10:00 AM', title: getTaskTitle('8', language), description: getTaskDescription('8', language), folderColor: '#8B5CF6', type: '循环', duration: language === 'zh' ? '2小时' : '2 hours', priority: 'low', category: 'pending', eventBookId: 'life' },
-    { id: '15', countdown: '已完成', deadline: '2024-09-10', title: getTaskTitle('15', language), description: getTaskDescription('15', language), folderColor: '#10B981', type: '一次性', priority: 'medium', category: 'completed', eventBookId: 'life' },
-    
+    { id: '6', countdown: '1天 12小时', deadline: '2024-09-20', title: getTaskTitle('6', language), description: getTaskDescription('6', language), folderColor: '#F59E0B', type: '一次性', priority: 'high', category: 'family', status: 'pending', eventBookId: 'life' },
+    { id: '7', countdown: '15天 8小时', deadline: '2025-10-04', title: getTaskTitle('7', language), description: getTaskDescription('7', language), folderColor: '#10B981', type: '一次性', priority: 'medium', category: 'wellness', status: 'pending', eventBookId: 'life' },
+    { id: '8', countdown: language === 'zh' ? '每周日 10:00' : 'Sundays 10:00 AM', title: getTaskTitle('8', language), description: getTaskDescription('8', language), folderColor: '#8B5CF6', type: '循环', duration: language === 'zh' ? '2小时' : '2 hours', priority: 'low', category: 'wellness', status: 'pending', eventBookId: 'life' },
+    { id: '15', countdown: '已完成', deadline: '2024-09-10', title: getTaskTitle('15', language), description: getTaskDescription('15', language), folderColor: '#10B981', type: '一次性', priority: 'medium', category: 'family', status: 'completed', eventBookId: 'life' },
+
     // Fitness tasks
-    { id: '9', countdown: '3天 6小时', deadline: '2024-09-22', title: getTaskTitle('9', language), description: getTaskDescription('9', language), folderColor: '#F59E0B', type: '一次性', priority: 'medium', category: 'pending', eventBookId: 'fitness' },
-    { id: '10', countdown: language === 'zh' ? '每周一、三、五 19:00' : 'Mon, Wed, Fri 7:00 PM', title: getTaskTitle('10', language), description: getTaskDescription('10', language), folderColor: '#EF4444', type: '循环', duration: language === 'zh' ? '1.5小时' : '1.5 hours', priority: 'high', category: 'pending', eventBookId: 'fitness' },
-    { id: '16', countdown: '已逾期 1天', deadline: '2024-09-18', title: getTaskTitle('16', language), description: getTaskDescription('16', language), folderColor: '#EF4444', type: '一次性', priority: 'high', category: 'overdue', eventBookId: 'fitness' },
-    
+    { id: '9', countdown: '3天 6小时', deadline: '2024-09-22', title: getTaskTitle('9', language), description: getTaskDescription('9', language), folderColor: '#F59E0B', type: '一次性', priority: 'medium', category: 'strength', status: 'pending', eventBookId: 'fitness' },
+    { id: '10', countdown: language === 'zh' ? '每周一、三、五 19:00' : 'Mon, Wed, Fri 7:00 PM', title: getTaskTitle('10', language), description: getTaskDescription('10', language), folderColor: '#EF4444', type: '循环', duration: language === 'zh' ? '1.5小时' : '1.5 hours', priority: 'high', category: 'cardio', status: 'pending', eventBookId: 'fitness' },
+    { id: '16', countdown: '已逾期 1天', deadline: '2024-09-18', title: getTaskTitle('16', language), description: getTaskDescription('16', language), folderColor: '#EF4444', type: '一次性', priority: 'high', category: 'strength', status: 'overdue', eventBookId: 'fitness' },
+
     // Work tasks
-    { id: '11', countdown: '12天 16小时', deadline: '2025-10-01', title: getTaskTitle('11', language), description: getTaskDescription('11', language), folderColor: '#8B5CF6', type: '一次性', priority: 'high', category: 'pending', eventBookId: 'work' },
-    { id: '12', countdown: '25天 10小时', deadline: '2025-10-14', title: getTaskTitle('12', language), description: getTaskDescription('12', language), folderColor: '#3B82F6', type: '一次性', priority: 'medium', category: 'pending', eventBookId: 'work' },
-    { id: '13', countdown: language === 'zh' ? '每周一 09:00' : 'Mondays 9:00 AM', title: getTaskTitle('13', language), description: getTaskDescription('13', language), folderColor: '#10B981', type: '循环', duration: language === 'zh' ? '1小时' : '1 hour', priority: 'medium', category: 'pending', eventBookId: 'work' },
-    { id: '17', countdown: '已完成', deadline: '2024-09-15', title: getTaskTitle('17', language), description: getTaskDescription('17', language), folderColor: '#10B981', type: '一次性', priority: 'medium', category: 'completed', eventBookId: 'work' }
+    { id: '11', countdown: '12天 16小时', deadline: '2025-10-01', title: getTaskTitle('11', language), description: getTaskDescription('11', language), folderColor: '#8B5CF6', type: '一次性', priority: 'high', category: 'product', status: 'pending', eventBookId: 'work' },
+    { id: '12', countdown: '25天 10小时', deadline: '2025-10-14', title: getTaskTitle('12', language), description: getTaskDescription('12', language), folderColor: '#3B82F6', type: '一次性', priority: 'medium', category: 'product', status: 'pending', eventBookId: 'work' },
+    { id: '13', countdown: language === 'zh' ? '每周一 09:00' : 'Mondays 9:00 AM', title: getTaskTitle('13', language), description: getTaskDescription('13', language), folderColor: '#10B981', type: '循环', duration: language === 'zh' ? '1小时' : '1 hour', priority: 'medium', category: 'meetings', status: 'pending', eventBookId: 'work' },
+    { id: '17', countdown: '已完成', deadline: '2024-09-15', title: getTaskTitle('17', language), description: getTaskDescription('17', language), folderColor: '#10B981', type: '一次性', priority: 'medium', category: 'product', status: 'completed', eventBookId: 'work' }
   ];
 
   return { tasks, eventBooks };
@@ -240,7 +243,11 @@ export function AllTasksView({
 
     // Filter by status
     if (currentFilter !== 'all') {
-      filteredTasks = filteredTasks.filter(task => task.category === currentFilter);
+      filteredTasks = filteredTasks.filter(task =>
+        isSystemCategory(currentFilter)
+          ? task.status === currentFilter
+          : task.category === currentFilter
+      );
     }
 
     // Filter by event book
@@ -261,8 +268,8 @@ export function AllTasksView({
     if (!eventBook) return null;
     
     const IconComponent = getIconComponent(eventBook.icon);
-    const isCompleted = task.category === 'completed';
-    const isOverdue = task.category === 'overdue';
+    const isCompleted = task.status === 'completed';
+    const isOverdue = task.status === 'overdue';
     
     // Format countdown text based on current language
     const formattedCountdown = formatCountdown(task.countdown, currentLanguage);
@@ -469,14 +476,20 @@ export function AllTasksView({
   };
 
   return (
-    <div 
+    <div
       className="full-screen-bg relative"
-      style={{ background: theme.styles.backgroundImage }}
+      style={{
+        background: theme.styles.backgroundImage,
+        ...safeAreaPadding({ bottom: 96 })
+      }}
     >
       <CloudDecoration />
-      
+
       {/* Header */}
-      <div className="relative z-10 px-4 pb-2 pt-4">
+      <div
+        className="relative z-10 pb-2"
+        style={safeAreaPadding({ top: 24, left: 16, right: 16 })}
+      >
         <div className="flex items-center justify-between mb-6">
           <button
             onClick={onBack}
@@ -523,7 +536,13 @@ export function AllTasksView({
         </div>
       </div>
       
-      <div className="relative z-10 px-4 space-y-6 pb-24">
+      <div
+        className="relative z-10 space-y-6"
+        style={{
+          ...safeAreaPadding({ left: 16, right: 16 }),
+          paddingBottom: safeAreaInset('bottom', 96)
+        }}
+      >
         {/* Filter Controls */}
         <div className="space-y-4">
           {/* Event Book Filter - Now first row */}

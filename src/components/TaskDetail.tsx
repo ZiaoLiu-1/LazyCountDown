@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { ArrowLeft, Check, Trash2, Calendar, Clock, Star, RefreshCw } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
+import { safeAreaInset, safeAreaPadding } from '../utils/safeArea';
+import { getCustomCategories, isSystemCategory } from '../data/categories';
 import { CategorySlider } from './CategorySlider';
 
 interface TaskDetailProps {
@@ -14,6 +16,7 @@ interface TaskDetailProps {
     type: '一次性' | '循环';
     priority?: 'high' | 'medium' | 'low';
     category?: string;
+    status?: 'pending' | 'completed' | 'overdue';
     eventBookId?: string;
   };
   onBack: () => void;
@@ -30,27 +33,12 @@ export function TaskDetail({ task, onBack, onSave, onDelete, onComplete }: TaskD
   const [deadlineTime, setDeadlineTime] = useState('00:00');
   const [taskType, setTaskType] = useState<'一次性' | '循环'>(task?.type || '一次性');
   const [priority, setPriority] = useState(task?.priority || 'medium');
-  const [category, setCategory] = useState(task?.category || 'pending'); // 默认为"进行中"
-
-  // 获取当前事件薄的分类数据（系统分类 + 自定义分类）
-  const getCategories = () => {
-    // 系统分类
-    const systemCategories = [
-      { id: 'pending', label: t.filterTypes.pending, color: '#60A5FA' },
-      { id: 'completed', label: t.filterTypes.completed, color: '#10B981' },
-      { id: 'overdue', label: t.filterTypes.overdue, color: '#F87171' }
-    ];
-
-    // 模拟当前事件薄的自定义分类（实际应用中这些数据会从状态管理或API获取）
-    const customCategories = [
-      { id: 'csc3', label: t.filterTypes.csc3, color: '#9B69FB' },
-      // 这里可以添加更多自定义分类，基于当前选中的事件薄
-    ];
-
-    return [...systemCategories, ...customCategories];
-  };
-
-  const categories = getCategories();
+  const eventBookId = task?.eventBookId || 'university';
+  const availableCustomCategories = getCustomCategories(eventBookId, currentLanguage);
+  const initialCategory = task?.category && !isSystemCategory(task.category)
+    ? task.category
+    : availableCustomCategories[0]?.id;
+  const [category, setCategory] = useState<string | undefined>(initialCategory);
 
   const priorities = [
     { id: 'high', label: t.priorities.high, color: '#F87171' },
@@ -69,23 +57,27 @@ export function TaskDetail({ task, onBack, onSave, onDelete, onComplete }: TaskD
       type: taskType,
       priority,
       category,
+      status: task?.status || 'pending',
       eventBookId: task?.eventBookId || 'university'
     };
     onSave(updatedTask);
   };
 
   return (
-    <div 
-      className="min-h-screen"
-      style={{ 
+    <div
+      className="full-screen-bg"
+      style={{
         background: theme.styles.backgroundImage,
-        color: theme.colors.foreground 
+        color: theme.colors.foreground,
+        ...safeAreaPadding({ bottom: 96 })
       }}
     >
       {/* Fixed Header */}
-      <div 
-        className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-4 py-4 border-b"
+      <div
+        className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between border-b"
         style={{
+          ...safeAreaPadding({ top: 16, left: 16, right: 16 }),
+          paddingBottom: 16,
           backgroundColor: theme.colors.background + 'F0', // 半透明背景
           backdropFilter: 'blur(10px)',
           borderColor: theme.colors.cardBorder
@@ -114,7 +106,13 @@ export function TaskDetail({ task, onBack, onSave, onDelete, onComplete }: TaskD
       </div>
 
       {/* Content with top padding to account for fixed header */}
-      <div className="pt-20 px-4 pb-24 space-y-6">
+      <div
+        className="space-y-6"
+        style={{
+          paddingTop: safeAreaInset('top', 80),
+          ...safeAreaPadding({ left: 16, right: 16 })
+        }}
+      >
         {/* Title Input */}
         <div className="space-y-3">
           <label className="text-sm flex items-center gap-1" style={{ color: theme.colors.mutedForeground }}>
@@ -174,11 +172,26 @@ export function TaskDetail({ task, onBack, onSave, onDelete, onComplete }: TaskD
         {/* Category Selection */}
         <div className="space-y-3">
           <label className="text-sm" style={{ color: theme.colors.mutedForeground }}>{t.taskDetail.categoryLabel}</label>
-          <CategorySlider
-            items={categories}
-            selectedId={category}
-            onSelect={setCategory}
-          />
+          {availableCustomCategories.length > 0 ? (
+            <CategorySlider
+              items={availableCustomCategories}
+              selectedId={category || ''}
+              onSelect={setCategory}
+            />
+          ) : (
+            <div
+              className={`p-4 rounded-2xl border text-sm ${theme.styles.cardStyle}`}
+              style={{
+                backgroundColor: theme.colors.card,
+                borderColor: theme.colors.cardBorder,
+                color: theme.colors.mutedForeground,
+              }}
+            >
+              {currentLanguage === 'zh'
+                ? '暂无自定义分类，可在分类管理中创建新的文件夹。'
+                : 'No custom folders yet. Create one in category management.'}
+            </div>
+          )}
         </div>
 
         {/* Date and Time */}
