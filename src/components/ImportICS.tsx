@@ -22,7 +22,7 @@ export function ImportICS({ onBack, onImport }: ImportICSProps) {
       <div
         className="flex items-center justify-between mb-6"
         style={{
-          ...safeAreaPadding({ top: 24, left: 16, right: 16 }),
+          ...safeAreaPadding({ top: 44, left: 16, right: 16 }),
           paddingBottom: 16
         }}
       >

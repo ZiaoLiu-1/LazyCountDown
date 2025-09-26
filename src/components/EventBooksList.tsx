@@ -99,10 +99,10 @@ export function EventBooksList({ onSelectBook, onCreateBook, onSettingsClick, on
       {/* Header */}
       <div
         className="flex items-center justify-between mb-6"
-        style={safeAreaPadding({ top: 24, left: 16, right: 16 })}
+        style={safeAreaPadding({ top: 44, left: 16, right: 16 })}
       >
         <div>
-          <h1 className="text-2xl mb-1 mobile-text-size" style={{ color: theme.colors.foreground }}>
+          <h1 className="text-3xl mb-1 mobile-text-size" style={{ color: theme.colors.foreground }}>
             {t.eventBooks.title}
           </h1>
           <p className="text-sm mobile-text-size" style={{ color: theme.colors.mutedForeground }}>

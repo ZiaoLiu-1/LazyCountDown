@@ -482,7 +482,7 @@ export function AllTasksView({
       {/* Header */}
       <div
         className="relative z-10 pb-2"
-        style={safeAreaPadding({ top: 24, left: 16, right: 16 })}
+        style={safeAreaPadding({ top: 44, left: 16, right: 16 })}
       >
         <div className="flex items-center justify-between mb-6">
           <button

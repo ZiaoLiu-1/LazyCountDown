@@ -106,7 +106,7 @@ export function CategoryManagement({ eventBook, onBack }: CategoryManagementProp
       {/* Header */}
       <div
         className="relative z-10 pb-2"
-        style={safeAreaPadding({ top: 24, left: 16, right: 16 })}
+        style={safeAreaPadding({ top: 44, left: 16, right: 16 })}
       >
         <div className="flex items-center justify-between mb-6">
           <button
@@ -406,7 +406,7 @@ export function CategoryManagement({ eventBook, onBack }: CategoryManagementProp
       {showDeleteDialog && categoryToDelete && (
         <div
           className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
-          style={safeAreaPadding({ top: 24, bottom: 24, left: 16, right: 16 })}
+          style={safeAreaPadding({ top: 44, bottom: 24, left: 16, right: 16 })}
         >
           <div 
             className={`w-full max-w-md p-6 rounded-2xl border ${theme.styles.cardStyle}`}
