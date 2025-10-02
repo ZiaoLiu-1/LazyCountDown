@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { ThemeProvider } from './contexts/ThemeContext';
 import { useTheme } from './contexts/ThemeContext';
 import { EventBooksList, EventBook } from './components/EventBooksList';
@@ -10,6 +10,7 @@ import { CategoryManagement } from './components/CategoryManagement';
 import { TaskDetail } from './components/TaskDetail';
 import { Settings } from './components/Settings';
 import { ImportICS } from './components/ImportICS';
+import { initializeDatabase, getDatabaseStats } from './repositories';
 
 interface Task {
   id: string;
@@ -33,6 +34,18 @@ function AppContent() {
   const [selectedEventBook, setSelectedEventBook] = useState<EventBook | undefined>(undefined);
   const [selectedTask, setSelectedTask] = useState<Task | undefined>(undefined);
   const [selectedCategory, setSelectedCategory] = useState<FilterType>('all');
+
+  // Initialize database on app startup
+  useEffect(() => {
+    const setupDatabase = async () => {
+      const initialized = await initializeDatabase();
+      if (initialized) {
+        const stats = await getDatabaseStats();
+        console.log('📊 Database stats:', stats);
+      }
+    };
+    setupDatabase();
+  }, []);
 
   const handleSelectEventBook = (eventBook: EventBook) => {
     setSelectedEventBook(eventBook);
