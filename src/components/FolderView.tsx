@@ -77,7 +77,7 @@ export function FolderView({ folder, tasks, onBack, onTaskClick, onUpdateFolder 
       <div
         className="flex items-center justify-between mb-6"
         style={{
-          ...safeAreaPadding({ top: 12, left: 16, right: 16 }),
+          ...safeAreaPadding({ top: 8, left: 16, right: 16 }),
           paddingBottom: 16
         }}
       >

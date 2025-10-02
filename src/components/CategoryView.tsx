@@ -82,7 +82,7 @@ export function CategoryView({ category, tasks, onBack, onTaskClick }: CategoryV
       <div
         className="flex items-center justify-between mb-6"
         style={{
-          ...safeAreaPadding({ top: 12, left: 16, right: 16 }),
+          ...safeAreaPadding({ top: 8, left: 16, right: 16 }),
           paddingBottom: 16
         }}
       >

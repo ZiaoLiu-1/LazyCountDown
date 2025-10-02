@@ -60,7 +60,7 @@ export function EventBooksList({ onSelectBook, onCreateBook, onSettingsClick, on
       {/* Header */}
       <div
         className="mb-6"
-        style={safeAreaPadding({ top: 12, left: 16, right: 16 })}
+        style={safeAreaPadding({ top: 8, left: 16, right: 16 })}
       >
         <div className="flex items-center justify-between">
           <div style={{ flex: 1 }}>

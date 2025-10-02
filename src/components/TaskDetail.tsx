@@ -91,7 +91,7 @@ export function TaskDetail({ task, onBack, onSave, onDelete, onComplete }: TaskD
       <div
         className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between border-b"
         style={{
-          ...safeAreaPadding({ top: 12, left: 16, right: 16 }),
+          ...safeAreaPadding({ top: 8, left: 16, right: 16 }),
           paddingBottom: 16,
           backgroundColor: theme.colors.background + 'F0', // 半透明背景
           backdropFilter: 'blur(10px)',

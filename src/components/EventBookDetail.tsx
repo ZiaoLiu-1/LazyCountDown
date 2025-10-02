@@ -1,15 +1,13 @@
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import { ArrowLeft, GraduationCap, Home, Dumbbell, Briefcase, BookOpen, Heart, FolderOpen, Tag } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
-import { FilterChips } from './FilterChips';
 import { StatsCards } from './StatsCards';
-import { TaskSection } from './TaskSection';
+import { CollapsibleTaskStatusSection } from './CollapsibleTaskStatusSection';
 import { FloatingActionButton } from './FloatingActionButton';
 import { CloudDecoration } from './CloudDecoration';
 import { safeAreaPadding } from '../utils/safeArea';
 import { EventBook } from './EventBooksList';
-import { formatCountdown, formatEventBookName, formatEventBookDescription } from '../utils/dateUtils';
-import { useTasks, useCountdown } from '../hooks';
+import { useTasks } from '../hooks';
 import { CountdownService } from '../services';
 import type { Task as TaskType } from '../types';
 
@@ -26,8 +24,6 @@ interface Task {
   category?: string;
   eventBookId: string;
 }
-
-type FilterType = 'all' | 'completed' | 'pending' | 'overdue' | 'csc3';
 
 interface EventBookDetailProps {
   eventBook: EventBook;
@@ -53,15 +49,13 @@ export function EventBookDetail({
   onCategoryManagement 
 }: EventBookDetailProps) {
   const { theme, t, currentLanguage } = useTheme();
-  const [currentFilter, setCurrentFilter] = useState<FilterType>('all');
 
   // Load tasks from database
   const { tasks: dbTasks, loading, refresh } = useTasks({ eventBookId: eventBook.id });
 
-  // Reset scroll position and filter when event book changes
+  // Reset scroll position when event book changes
   useEffect(() => {
     window.scrollTo(0, 0);
-    setCurrentFilter('all'); // Reset filter to 'all' when switching event books
     refresh();
   }, [eventBook.id]);
 
@@ -86,8 +80,6 @@ export function EventBookDetail({
   };
 
   const allTasks = dbTasks.map(convertToTask);
-  const oneTimeTasks = allTasks.filter(t => t.type === '一次性');
-  const recurringTasks = allTasks.filter(t => t.type === '循环');
 
   const getIconComponent = (iconName: string) => {
     const iconMap = {
@@ -103,14 +95,10 @@ export function EventBookDetail({
     return iconMap[iconName as keyof typeof iconMap] || BookOpen;
   };
 
-  // Filter tasks based on current filter
-  const getFilteredTasks = (tasks: Task[]) => {
-    if (currentFilter === 'all') return tasks;
-    return tasks.filter(task => task.category === currentFilter);
-  };
-
-  const filteredOneTimeTasks = getFilteredTasks(oneTimeTasks);
-  const filteredRecurringTasks = getFilteredTasks(recurringTasks);
+  // Group tasks by status
+  const overdueTasks = allTasks.filter(task => task.category === 'overdue');
+  const inProgressTasks = allTasks.filter(task => task.category === 'pending');
+  const completedTasks = allTasks.filter(task => task.category === 'completed');
 
   const IconComponent = getIconComponent(eventBook.icon);
 
@@ -127,7 +115,7 @@ export function EventBookDetail({
       {/* Header */}
       <div
         className="relative z-10 pb-2"
-        style={safeAreaPadding({ top: 12, left: 16, right: 16 })}
+        style={safeAreaPadding({ top: 8, left: 16, right: 16 })}
       >
         <div className="flex items-center justify-between mb-6">
           <button
@@ -179,29 +167,36 @@ export function EventBookDetail({
         className="relative z-10 space-y-6"
         style={safeAreaPadding({ left: 16, right: 16 })}
       >
-        <FilterChips 
-          tasks={allTasks}
-          selectedFilter={currentFilter}
-          onFilterChange={setCurrentFilter}
-        />
         <StatsCards tasks={dbTasks} />
         
-        {filteredOneTimeTasks.length > 0 || filteredRecurringTasks.length > 0 ? (
-          <div className="space-y-8">
-            {filteredOneTimeTasks.length > 0 && (
-              <TaskSection 
-                title={t.taskTypes['一次性']} 
-                tasks={filteredOneTimeTasks}
-                onTaskClick={onTaskClick}
-              />
-            )}
-            {filteredRecurringTasks.length > 0 && (
-              <TaskSection 
-                title={t.taskTypes['循环']} 
-                tasks={filteredRecurringTasks}
-                onTaskClick={onTaskClick}
-              />
-            )}
+        {allTasks.length > 0 ? (
+          <div className="space-y-6">
+            {/* Overdue Section */}
+            <CollapsibleTaskStatusSection
+              title={currentLanguage === 'zh' ? '已逾期' : 'Overdue'}
+              tasks={overdueTasks}
+              onTaskClick={onTaskClick}
+              statusColor="#EF4444"
+              defaultExpanded={true}
+            />
+
+            {/* In Progress Section */}
+            <CollapsibleTaskStatusSection
+              title={currentLanguage === 'zh' ? '进行中' : 'In Progress'}
+              tasks={inProgressTasks}
+              onTaskClick={onTaskClick}
+              statusColor="#3B82F6"
+              defaultExpanded={true}
+            />
+
+            {/* Completed Section */}
+            <CollapsibleTaskStatusSection
+              title={currentLanguage === 'zh' ? '已完成' : 'Completed'}
+              tasks={completedTasks}
+              onTaskClick={onTaskClick}
+              statusColor="#10B981"
+              defaultExpanded={false}
+            />
           </div>
         ) : (
           <div 
