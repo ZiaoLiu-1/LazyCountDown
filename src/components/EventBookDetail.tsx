@@ -412,9 +412,10 @@ export function EventBookDetail({
   // Load tasks from database
   const { tasks: dbTasks, loading, refresh } = useTasks({ eventBookId: eventBook.id });
 
-  // Reset scroll position to top when component mounts
+  // Reset scroll position and filter when event book changes
   useEffect(() => {
     window.scrollTo(0, 0);
+    setCurrentFilter('all'); // Reset filter to 'all' when switching event books
     refresh();
   }, [eventBook.id]);
 

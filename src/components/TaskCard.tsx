@@ -82,7 +82,7 @@ export function TaskCard({
       return {
         containerClass: 'task-due-soon animate-pulse-warning-yellow',
         borderColor: '#f59e0b',
-        backgroundColor: `linear-gradient(135deg, rgba(245, 158, 11, 0.08) 0%, rgba(245, 158, 11, 0.03) 100%)`,
+        backgroundColor: `linear-gradient(135deg, rgba(245, 158, 11, 0.20) 0%, rgba(245, 158, 11, 0.12) 100%)`,
         statusIcon: <Clock className="w-4 h-4" style={{ color: '#f59e0b' }} />,
         statusColor: '#f59e0b'
       };
@@ -90,9 +90,9 @@ export function TaskCard({
     
     if (isUrgent()) {
       return {
-        containerClass: '',
-        borderColor: theme.colors.warning + '60',
-        backgroundColor: theme.colors.card,
+        containerClass: 'task-urgent',
+        borderColor: theme.colors.warning,
+        backgroundColor: `linear-gradient(135deg, rgba(251, 191, 36, 0.15) 0%, rgba(251, 191, 36, 0.08) 100%)`,
         statusIcon: <Clock className="w-4 h-4" style={{ color: theme.colors.warning }} />,
         statusColor: theme.colors.warning
       };
