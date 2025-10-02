@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Plus, BookOpen, GraduationCap, Heart, Dumbbell, Briefcase, Home, ChevronRight, Filter } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
 import { formatEventBookName, formatEventBookDescription } from '../utils/dateUtils';
 import { safeAreaInset, safeAreaPadding } from '../utils/safeArea';
+import { useEventBooks } from '../hooks';
 
 export interface EventBook {
   id: string;
@@ -24,52 +25,12 @@ interface EventBooksListProps {
 
 export function EventBooksList({ onSelectBook, onCreateBook, onSettingsClick, onViewAllTasks }: EventBooksListProps) {
   const { theme, t, currentLanguage } = useTheme();
-  
-  // Create localized event books data
-  const defaultEventBooks: EventBook[] = [
-    {
-      id: 'university',
-      name: formatEventBookName('university', currentLanguage),
-      description: formatEventBookDescription('university', currentLanguage),
-      icon: 'graduation-cap',
-      color: '#3B82F6',
-      taskCount: 8,
-      completedCount: 3,
-      createdAt: '2024-01-15'
-    },
-    {
-      id: 'life',
-      name: formatEventBookName('life', currentLanguage),
-      description: formatEventBookDescription('life', currentLanguage),
-      icon: 'home',
-      color: '#10B981',
-      taskCount: 5,
-      completedCount: 2,
-      createdAt: '2024-01-10'
-    },
-    {
-      id: 'fitness',
-      name: formatEventBookName('fitness', currentLanguage),
-      description: formatEventBookDescription('fitness', currentLanguage),
-      icon: 'dumbbell',
-      color: '#F59E0B',
-      taskCount: 3,
-      completedCount: 1,
-      createdAt: '2024-01-20'
-    },
-    {
-      id: 'work',
-      name: formatEventBookName('work', currentLanguage),
-      description: formatEventBookDescription('work', currentLanguage),
-      icon: 'briefcase',
-      color: '#8B5CF6',
-      taskCount: 12,
-      completedCount: 7,
-      createdAt: '2024-01-08'
-    }
-  ];
-  
-  const [eventBooks] = useState<EventBook[]>(defaultEventBooks);
+  const { eventBooks, loading, refresh } = useEventBooks();
+
+  // Refresh event books when returning to this view
+  useEffect(() => {
+    refresh();
+  }, []);
 
   const getIconComponent = (iconName: string) => {
     const iconMap = {
@@ -217,6 +178,36 @@ export function EventBooksList({ onSelectBook, onCreateBook, onSettingsClick, on
             </div>
           </div>
         </button>
+
+        {/* Loading State */}
+        {loading && eventBooks.length === 0 && (
+          <div className={`p-8 rounded-2xl text-center ${theme.styles.cardStyle}`}
+            style={{
+              backgroundColor: theme.colors.card,
+              borderColor: theme.colors.cardBorder,
+            }}>
+            <p style={{ color: theme.colors.mutedForeground }}>
+              {currentLanguage === 'zh' ? '加载中...' : 'Loading...'}
+            </p>
+          </div>
+        )}
+
+        {/* Empty State */}
+        {!loading && eventBooks.length === 0 && (
+          <div className={`p-8 rounded-2xl text-center ${theme.styles.cardStyle}`}
+            style={{
+              backgroundColor: theme.colors.card,
+              borderColor: theme.colors.cardBorder,
+            }}>
+            <BookOpen className="w-12 h-12 mx-auto mb-4" style={{ color: theme.colors.mutedForeground }} />
+            <h3 className="mb-2" style={{ color: theme.colors.foreground }}>
+              {currentLanguage === 'zh' ? '还没有事件薄' : 'No Event Books Yet'}
+            </h3>
+            <p className="text-sm" style={{ color: theme.colors.mutedForeground }}>
+              {currentLanguage === 'zh' ? '点击下方按钮创建你的第一个事件薄' : 'Click the button below to create your first event book'}
+            </p>
+          </div>
+        )}
 
         {eventBooks.map((book) => {
           const IconComponent = getIconComponent(book.icon);

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { ThemeProvider } from './contexts/ThemeContext';
 import { useTheme } from './contexts/ThemeContext';
-import { EventBooksList, EventBook } from './components/EventBooksList';
+import { EventBooksList } from './components/EventBooksList';
 import { EventBookDetail } from './components/EventBookDetail';
 import { CreateEventBook } from './components/CreateEventBook';
 import { AllTasksView } from './components/AllTasksView';
@@ -10,7 +10,8 @@ import { CategoryManagement } from './components/CategoryManagement';
 import { TaskDetail } from './components/TaskDetail';
 import { Settings } from './components/Settings';
 import { ImportICS } from './components/ImportICS';
-import { initializeDatabase, getDatabaseStats } from './repositories';
+import { initializeDatabase, getDatabaseStats, EventBookRepository, TaskRepository } from './repositories';
+import type { EventBook, Task as TaskType } from './types';
 
 interface Task {
   id: string;
@@ -66,15 +67,20 @@ function AppContent() {
     setCurrentView('createEventBook');
   };
 
-  const handleSaveEventBook = (eventBookData: {
+  const handleSaveEventBook = async (eventBookData: {
     name: string;
     description: string;
     icon: string;
     color: string;
   }) => {
-    // In a real app, you would save this to your state/database
-    console.log('Saving new event book:', eventBookData);
-    setCurrentView('eventBooks');
+    try {
+      await EventBookRepository.create(eventBookData);
+      console.log('✅ Event book saved successfully');
+      setCurrentView('eventBooks');
+    } catch (error) {
+      console.error('❌ Failed to save event book:', error);
+      // In production, show a user-friendly error message
+    }
   };
 
   const handleTaskClick = (task: Task) => {
@@ -130,36 +136,75 @@ function AppContent() {
     setCurrentView('settings');
   };
 
-  const handleSaveTask = (updatedTask: Task) => {
-    // In a real app, you would update the task in your state/database
-    console.log('Saving task:', updatedTask);
-    // Return to the appropriate view
-    if (selectedEventBook) {
-      setCurrentView('eventBookDetail');
-    } else {
-      setCurrentView('allTasks');
+  const handleSaveTask = async (updatedTask: Task) => {
+    try {
+      if (updatedTask.id && !updatedTask.id.startsWith('task_')) {
+        // Creating a new task
+        await TaskRepository.create({
+          title: updatedTask.title,
+          description: updatedTask.description,
+          deadline: updatedTask.deadline || new Date().toISOString(),
+          type: updatedTask.type,
+          priority: updatedTask.priority || 'medium',
+          category: updatedTask.category || 'pending',
+          eventBookId: updatedTask.eventBookId,
+          notificationEnabled: false
+        });
+        console.log('✅ Task created successfully');
+      } else {
+        // Updating existing task
+        await TaskRepository.update({
+          id: updatedTask.id,
+          title: updatedTask.title,
+          description: updatedTask.description,
+          deadline: updatedTask.deadline,
+          type: updatedTask.type,
+          priority: updatedTask.priority,
+          category: updatedTask.category
+        });
+        console.log('✅ Task updated successfully');
+      }
+      
+      // Return to the appropriate view
+      if (selectedEventBook) {
+        setCurrentView('eventBookDetail');
+      } else {
+        setCurrentView('allTasks');
+      }
+    } catch (error) {
+      console.error('❌ Failed to save task:', error);
     }
   };
 
-  const handleDeleteTask = (taskId: string) => {
-    // In a real app, you would delete the task from your state/database
-    console.log('Deleting task:', taskId);
-    // Return to the appropriate view
-    if (selectedEventBook) {
-      setCurrentView('eventBookDetail');
-    } else {
-      setCurrentView('allTasks');
+  const handleDeleteTask = async (taskId: string) => {
+    try {
+      await TaskRepository.delete(taskId);
+      console.log('✅ Task deleted successfully');
+      
+      // Return to the appropriate view
+      if (selectedEventBook) {
+        setCurrentView('eventBookDetail');
+      } else {
+        setCurrentView('allTasks');
+      }
+    } catch (error) {
+      console.error('❌ Failed to delete task:', error);
     }
   };
 
-  const handleCompleteTask = (taskId: string) => {
-    // In a real app, you would mark the task as completed
-    console.log('Completing task:', taskId);
-    // Return to the appropriate view
-    if (selectedEventBook) {
-      setCurrentView('eventBookDetail');
-    } else {
-      setCurrentView('allTasks');
+  const handleCompleteTask = async (taskId: string) => {
+    try {
+      await TaskRepository.toggleComplete(taskId);
+      console.log('✅ Task completion toggled successfully');
+      
+      // Return to the appropriate view
+      if (selectedEventBook) {
+        setCurrentView('eventBookDetail');
+      } else {
+        setCurrentView('allTasks');
+      }
+    } catch (error) {
+      console.error('❌ Failed to toggle task completion:', error);
     }
   };
 
