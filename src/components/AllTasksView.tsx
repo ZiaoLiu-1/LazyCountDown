@@ -602,7 +602,7 @@ export function AllTasksView({
           />
         </div>
 
-        <StatsCards />
+        <StatsCards tasks={dbTasks} />
         
         {oneTimeTasks.length > 0 || recurringTasks.length > 0 ? (
           <div className="space-y-8">

@@ -1,40 +1,57 @@
 import { Clock, CheckCircle, AlertCircle, TrendingUp } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
 
-export function StatsCards() {
+interface Task {
+  id: string;
+  completed: boolean;
+  category?: string;
+}
+
+interface StatsCardsProps {
+  tasks: Task[];
+}
+
+export function StatsCards({ tasks }: StatsCardsProps) {
   const { theme, t, currentLanguage } = useTheme();
+  
+  // Calculate real stats from tasks
+  const pendingCount = tasks.filter(t => !t.completed && t.category !== 'overdue').length;
+  const completedCount = tasks.filter(t => t.completed).length;
+  const overdueCount = tasks.filter(t => t.category === 'overdue' && !t.completed).length;
+  const totalTasks = tasks.length;
+  const efficiency = totalTasks > 0 ? Math.round((completedCount / totalTasks) * 100) : 0;
   
   const statsData = [
     {
       id: 'pending',
       label: t.filterTypes.pending,
-      value: '8',
+      value: pendingCount.toString(),
       icon: Clock,
-      trend: '+2',
+      trend: '',
       trendUp: true
     },
     {
       id: 'completed',
       label: t.filterTypes.completed,
-      value: '24',
+      value: completedCount.toString(),
       icon: CheckCircle,
-      trend: '+5',
+      trend: '',
       trendUp: true
     },
     {
       id: 'overdue',
       label: t.filterTypes.overdue,
-      value: '2',
+      value: overdueCount.toString(),
       icon: AlertCircle,
-      trend: '-1',
+      trend: '',
       trendUp: false
     },
     {
       id: 'efficiency',
       label: currentLanguage === 'zh' ? '效率' : 'Efficiency',
-      value: '92%',
+      value: `${efficiency}%`,
       icon: TrendingUp,
-      trend: '+8%',
+      trend: '',
       trendUp: true
     }
   ];
@@ -63,19 +80,6 @@ export function StatsCards() {
                   className="w-4 h-4" 
                   style={{ color: theme.colors.primary }}
                 />
-              </div>
-              <div 
-                className={`flex items-center gap-1 px-2 py-1 rounded-lg text-xs ${
-                  stat.trendUp ? '' : ''
-                }`}
-                style={{
-                  backgroundColor: stat.trendUp 
-                    ? theme.colors.success + '20' 
-                    : theme.colors.destructive + '20',
-                  color: stat.trendUp ? theme.colors.success : theme.colors.destructive,
-                }}
-              >
-                <span>{stat.trend}</span>
               </div>
             </div>
             
