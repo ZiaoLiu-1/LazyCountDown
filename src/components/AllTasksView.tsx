@@ -9,6 +9,9 @@ import { CloudDecoration } from './CloudDecoration';
 import { EventBookFilterChips } from './EventBookFilterChips';
 import { formatCountdown, formatEventBookName, formatEventBookDescription } from '../utils/dateUtils';
 import { safeAreaInset, safeAreaPadding } from '../utils/safeArea';
+import { useTasks, useEventBooks } from '../hooks';
+import { CountdownService } from '../services';
+import type { Task as TaskType } from '../types';
 
 interface Task {
   id: string;
@@ -221,12 +224,40 @@ export function AllTasksView({
   const [currentFilter, setCurrentFilter] = useState<FilterType>('all');
   const [selectedEventBookFilter, setSelectedEventBookFilter] = useState<string>('all');
 
+  // Load data from database
+  const { tasks: dbTasks, loading: tasksLoading, refresh: refreshTasks } = useTasks();
+  const { eventBooks, loading: ebLoading, refresh: refreshEventBooks } = useEventBooks();
+
   // Reset scroll position to top when component mounts
   useEffect(() => {
     window.scrollTo(0, 0);
+    refreshTasks();
+    refreshEventBooks();
   }, []);
-  
-  const { tasks, eventBooks } = getAllTasks(currentLanguage);
+
+  // Convert database tasks to component format with real countdowns
+  const convertToTask = (task: TaskType): Task => {
+    const eventBook = eventBooks.find(eb => eb.id === task.eventBookId);
+    const countdown = task.completed 
+      ? (currentLanguage === 'zh' ? '已完成' : 'Completed')
+      : CountdownService.calculateCountdown(task.deadline, currentLanguage);
+    
+    return {
+      id: task.id,
+      countdown,
+      deadline: task.deadline,
+      title: task.title,
+      description: task.description,
+      folderColor: eventBook?.color || '#3B82F6',
+      type: task.type,
+      duration: (task as any).duration,
+      priority: task.priority,
+      category: task.completed ? 'completed' : (CountdownService.isOverdue(task.deadline) ? 'overdue' : 'pending'),
+      eventBookId: task.eventBookId
+    };
+  };
+
+  const tasks = dbTasks.map(convertToTask);
 
   const getIconComponent = (iconName: string) => {
     const iconMap = {

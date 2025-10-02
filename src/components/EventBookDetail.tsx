@@ -9,6 +9,9 @@ import { CloudDecoration } from './CloudDecoration';
 import { safeAreaPadding } from '../utils/safeArea';
 import { EventBook } from './EventBooksList';
 import { formatCountdown, formatEventBookName, formatEventBookDescription } from '../utils/dateUtils';
+import { useTasks, useCountdown } from '../hooks';
+import { CountdownService } from '../services';
+import type { Task as TaskType } from '../types';
 
 interface Task {
   id: string;
@@ -406,13 +409,38 @@ export function EventBookDetail({
   const { theme, t, currentLanguage } = useTheme();
   const [currentFilter, setCurrentFilter] = useState<FilterType>('all');
 
+  // Load tasks from database
+  const { tasks: dbTasks, loading, refresh } = useTasks({ eventBookId: eventBook.id });
+
   // Reset scroll position to top when component mounts
   useEffect(() => {
     window.scrollTo(0, 0);
-  }, []);
-  
-  const { oneTime: oneTimeTasks, recurring: recurringTasks } = getTasksForEventBook(eventBook.id, currentLanguage);
-  const allTasks = [...oneTimeTasks, ...recurringTasks];
+    refresh();
+  }, [eventBook.id]);
+
+  // Convert database tasks to component format with real countdowns
+  const convertToTask = (task: TaskType): Task => {
+    const countdown = task.completed 
+      ? (currentLanguage === 'zh' ? '已完成' : 'Completed')
+      : CountdownService.calculateCountdown(task.deadline, currentLanguage);
+    
+    return {
+      id: task.id,
+      countdown,
+      deadline: task.deadline,
+      title: task.title,
+      description: task.description,
+      folderColor: eventBook.color,
+      type: task.type,
+      priority: task.priority,
+      category: task.completed ? 'completed' : (CountdownService.isOverdue(task.deadline) ? 'overdue' : 'pending'),
+      eventBookId: task.eventBookId
+    };
+  };
+
+  const allTasks = dbTasks.map(convertToTask);
+  const oneTimeTasks = allTasks.filter(t => t.type === '一次性');
+  const recurringTasks = allTasks.filter(t => t.type === '循环');
 
   const getIconComponent = (iconName: string) => {
     const iconMap = {
