@@ -8,7 +8,7 @@ interface ImportICSProps {
 }
 
 export function ImportICS({ onBack, onImport }: ImportICSProps) {
-  const { theme, t } = useTheme();
+  const { theme, t, currentLanguage } = useTheme();
 
   return (
     <div
@@ -87,7 +87,7 @@ export function ImportICS({ onBack, onImport }: ImportICSProps) {
                 color: theme.colors.primaryForeground,
               }}
             >
-              {t.currentLanguage === 'zh' ? '选择文件' : 'Choose File'}
+              {currentLanguage === 'zh' ? '选择文件' : 'Choose File'}
             </button>
           </div>
         </div>
@@ -107,13 +107,13 @@ export function ImportICS({ onBack, onImport }: ImportICSProps) {
             />
             <div>
               <h4 className="mb-2" style={{ color: theme.colors.foreground }}>
-                {t.currentLanguage === 'zh' ? '导入说明' : 'Import Instructions'}
+                {currentLanguage === 'zh' ? '导入说明' : 'Import Instructions'}
               </h4>
               <ul className="text-sm space-y-1" style={{ color: theme.colors.mutedForeground }}>
-                <li>{t.currentLanguage === 'zh' ? '• 支持标准 .ics 日历文件' : '• Support standard .ics calendar files'}</li>
-                <li>{t.currentLanguage === 'zh' ? '• 支持 .csv 表格文件' : '• Support .csv spreadsheet files'}</li>
-                <li>{t.currentLanguage === 'zh' ? '• 文件大小不超过 10MB' : '• File size should not exceed 10MB'}</li>
-                <li>{t.currentLanguage === 'zh' ? '• 导入后可预览和编辑内容' : '• Preview and edit content after import'}</li>
+                <li>{currentLanguage === 'zh' ? '• 支持标准 .ics 日历文件' : '• Support standard .ics calendar files'}</li>
+                <li>{currentLanguage === 'zh' ? '• 支持 .csv 表格文件' : '• Support .csv spreadsheet files'}</li>
+                <li>{currentLanguage === 'zh' ? '• 文件大小不超过 10MB' : '• File size should not exceed 10MB'}</li>
+                <li>{currentLanguage === 'zh' ? '• 导入后可预览和编辑内容' : '• Preview and edit content after import'}</li>
               </ul>
             </div>
           </div>
@@ -137,10 +137,10 @@ export function ImportICS({ onBack, onImport }: ImportICSProps) {
               style={{ color: theme.colors.mutedForeground }} 
             />
             <h4 className="mb-2" style={{ color: theme.colors.foreground }}>
-              {t.currentLanguage === 'zh' ? '暂无预览内容' : 'No Preview Available'}
+              {currentLanguage === 'zh' ? '暂无预览内容' : 'No Preview Available'}
             </h4>
             <p className="text-sm" style={{ color: theme.colors.mutedForeground }}>
-              {t.currentLanguage === 'zh' ? '选择文件后将显示预览内容' : 'Preview will be shown after selecting a file'}
+              {currentLanguage === 'zh' ? '选择文件后将显示预览内容' : 'Preview will be shown after selecting a file'}
             </p>
           </div>
         </div>

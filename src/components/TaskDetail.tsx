@@ -221,7 +221,7 @@ export function TaskDetail({ task, onBack, onSave, onDelete, onComplete }: TaskD
           <div className="space-y-3">
             <label className="text-sm flex items-center gap-1" style={{ color: theme.colors.mutedForeground }}>
               <Clock className="w-4 h-4" />
-              {t.currentLanguage === 'zh' ? '截止时间' : 'Deadline Time'}
+              {currentLanguage === 'zh' ? '截止时间' : 'Deadline Time'}
             </label>
             <input
               type="time"

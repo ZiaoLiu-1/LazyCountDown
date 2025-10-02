@@ -11,7 +11,7 @@ interface FileStorageProps {
 }
 
 export function FileStorage({ eventBookId, eventBookName, eventBookIcon, eventBookColor, onBack }: FileStorageProps) {
-  const { theme, t } = useTheme();
+  const { theme, t, currentLanguage } = useTheme();
 
   return (
     <div
@@ -98,7 +98,7 @@ export function FileStorage({ eventBookId, eventBookName, eventBookIcon, eventBo
                 {t.fileStorage.uploadFiles}
               </h3>
               <p className="text-sm" style={{ color: theme.colors.mutedForeground }}>
-                {t.currentLanguage === 'zh' ? '拖拽文件到此处或点击上传' : 'Drag files here or click to upload'}
+                {currentLanguage === 'zh' ? '拖拽文件到此处或点击上传' : 'Drag files here or click to upload'}
               </p>
             </div>
             <button
@@ -108,7 +108,7 @@ export function FileStorage({ eventBookId, eventBookName, eventBookIcon, eventBo
                 color: theme.colors.primaryForeground,
               }}
             >
-              {t.currentLanguage === 'zh' ? '选择文件' : 'Choose Files'}
+              {currentLanguage === 'zh' ? '选择文件' : 'Choose Files'}
             </button>
           </div>
         </div>
