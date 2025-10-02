@@ -22,7 +22,7 @@ interface FilterChipsProps {
 }
 
 export function FilterChips({ tasks, selectedFilter, onFilterChange }: FilterChipsProps) {
-  const { theme, t } = useTheme();
+  const { theme, t, currentLanguage } = useTheme();
   
   const getTaskCount = (filter: FilterType) => {
     if (filter === 'all') return tasks.length;
@@ -45,9 +45,11 @@ export function FilterChips({ tasks, selectedFilter, onFilterChange }: FilterChi
       { id: 'overdue' as FilterType, label: t.filterTypes.overdue }
     ];
 
-    // 自定义分类（CSC3等）
+    // 自定义分类（根据事件薄获取）
     const customCategories = [
-      { id: 'csc3' as FilterType, label: t.filterTypes.csc3 }
+      { id: 'csc3' as FilterType, label: currentLanguage === 'zh' ? 'CSC347 期末项目' : 'CSC347 Final Project' },
+      { id: 'math' as FilterType, label: currentLanguage === 'zh' ? '数学课程' : 'Math Courses' },
+      { id: 'projects' as FilterType, label: currentLanguage === 'zh' ? '项目作业' : 'Project Assignments' }
     ];
 
     // 收集所有有任务的分类

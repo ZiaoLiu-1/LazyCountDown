@@ -115,7 +115,7 @@ const texts = {
       'completed': '已完成',
       'pending': '进行中',
       'overdue': '逾期',
-      'csc3': '效率'
+      'csc3': 'CSC3'
     },
     allTasks: {
       title: '全部任务',
@@ -144,7 +144,6 @@ const texts = {
       noTasksDesc: '点击下方按钮添加您的第一个倒计时任务',
       totalTasks: '总任务',
       completedTasks: '已完成',
-      efficiency: '效率'
     },
     taskDetail: {
       back: '返回',
@@ -329,7 +328,7 @@ const texts = {
       'completed': 'Completed',
       'pending': 'In Progress',
       'overdue': 'Overdue',
-      'csc3': 'Efficiency'
+      'csc3': 'CSC3'
     },
     allTasks: {
       title: 'All Tasks',
@@ -358,7 +357,6 @@ const texts = {
       noTasksDesc: 'Click the button below to add your first countdown task',
       totalTasks: 'Total Tasks',
       completedTasks: 'Completed',
-      efficiency: 'Efficiency'
     },
     taskDetail: {
       back: 'Back',

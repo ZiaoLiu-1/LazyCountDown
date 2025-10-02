@@ -183,7 +183,7 @@ const getTasksForEventBook = (eventBookId: string, language: 'zh' | 'en'): { one
           folderColor: '#F59E0B',
           type: '一次性' as const,
           priority: 'high' as const,
-          category: 'pending',
+          category: 'csc3',
           eventBookId: 'university'
         },
         {
@@ -195,7 +195,7 @@ const getTasksForEventBook = (eventBookId: string, language: 'zh' | 'en'): { one
           folderColor: '#EF4444',
           type: '一次性' as const,
           priority: 'medium' as const,
-          category: 'pending',
+          category: 'math',
           eventBookId: 'university'
         },
         {
@@ -233,7 +233,7 @@ const getTasksForEventBook = (eventBookId: string, language: 'zh' | 'en'): { one
           type: '循环' as const,
           duration: language === 'zh' ? '2小时' : '2 hours',
           priority: 'medium' as const,
-          category: 'pending',
+          category: 'projects',
           eventBookId: 'university'
         }
       ]
@@ -452,7 +452,7 @@ export function EventBookDetail({
       {/* Header */}
       <div
         className="relative z-10 pb-2"
-        style={safeAreaPadding({ top: 18, left: 16, right: 16 })}
+        style={safeAreaPadding({ top: 12, left: 16, right: 16 })}
       >
         <div className="flex items-center justify-between mb-6">
           <button

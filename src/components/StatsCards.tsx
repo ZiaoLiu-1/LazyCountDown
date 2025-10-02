@@ -2,7 +2,7 @@ import { Clock, CheckCircle, AlertCircle, TrendingUp } from 'lucide-react';
 import { useTheme } from '../contexts/ThemeContext';
 
 export function StatsCards() {
-  const { theme, t } = useTheme();
+  const { theme, t, currentLanguage } = useTheme();
   
   const statsData = [
     {
@@ -31,7 +31,7 @@ export function StatsCards() {
     },
     {
       id: 'efficiency',
-      label: t.filterTypes.csc3,
+      label: currentLanguage === 'zh' ? '效率' : 'Efficiency',
       value: '92%',
       icon: TrendingUp,
       trend: '+8%',

@@ -130,9 +130,9 @@ export function FloatingActionButton({ onAddTask, onImportICS, onFileStorage, on
   const styles = getButtonStyles();
 
   return (
-    <div className="fixed z-50" style={{ 
-      right: `calc(16px + env(safe-area-inset-right))`,
-      bottom: `calc(24px + env(safe-area-inset-bottom))`
+    <div className="fixed bottom-6 right-4 z-50" style={{
+      marginRight: `env(safe-area-inset-right)`,
+      marginBottom: `env(safe-area-inset-bottom)`
     }}>
       {/* Enhanced Backdrop */}
       {isExpanded && (
@@ -143,12 +143,15 @@ export function FloatingActionButton({ onAddTask, onImportICS, onFileStorage, on
             onClick={() => setIsExpanded(false)}
           />
           {/* Radial glow effect */}
-          <div 
-            className="fixed bottom-6 right-4 w-24 h-24 rounded-full opacity-15 transition-opacity duration-500"
+          <div
+            className="absolute -inset-6 w-24 h-24 rounded-full opacity-15 transition-opacity duration-500"
             style={{
               background: `radial-gradient(circle, ${styles.main.glow} 0%, transparent 70%)`,
               zIndex: -2,
-              filter: 'blur(16px)'
+              filter: 'blur(16px)',
+              top: '50%',
+              left: '50%',
+              transform: 'translate(-50%, -50%)'
             }}
           />
         </>

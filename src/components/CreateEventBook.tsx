@@ -71,7 +71,7 @@ export function CreateEventBook({ onBack, onSave }: CreateEventBookProps) {
       <div
         className="flex items-center justify-between mb-6"
         style={{
-          ...safeAreaPadding({ top: 18, left: 16, right: 16 }),
+          ...safeAreaPadding({ top: 12, left: 16, right: 16 }),
           paddingBottom: 16
         }}
       >

@@ -36,27 +36,25 @@ export function TaskDetail({ task, onBack, onSave, onDelete, onComplete }: TaskD
   }, []);
   const [taskType, setTaskType] = useState<'一次性' | '循环'>(task?.type || '一次性');
   const [priority, setPriority] = useState(task?.priority || 'medium');
-  const [category, setCategory] = useState(task?.category || 'pending'); // 默认为"进行中"
+  const [category, setCategory] = useState(task?.category || 'csc3'); // 默认为第一个自定义分类
 
-  // 获取当前事件薄的分类数据（系统分类 + 自定义分类）
-  const getCategories = () => {
-    // 系统分类
-    const systemCategories = [
-      { id: 'pending', label: t.filterTypes.pending, color: '#60A5FA' },
-      { id: 'completed', label: t.filterTypes.completed, color: '#10B981' },
-      { id: 'overdue', label: t.filterTypes.overdue, color: '#F87171' }
-    ];
+  // 获取当前事件薄的自定义分类数据（不包含系统分类）
+  const getCustomCategories = () => {
+    // 系统分类（已完成/进行中/逾期）由系统自动管理，用户不能手动选择
+    // 这里只返回用户可以选择的自定义分类
 
     // 模拟当前事件薄的自定义分类（实际应用中这些数据会从状态管理或API获取）
     const customCategories = [
-      { id: 'csc3', label: t.filterTypes.csc3, color: '#9B69FB' },
+      { id: 'csc3', label: 'CSC347 期末项目', color: '#9B69FB' },
+      { id: 'math', label: '数学课程', color: '#8B5CF6' },
+      { id: 'projects', label: '项目作业', color: '#06B6D4' },
       // 这里可以添加更多自定义分类，基于当前选中的事件薄
     ];
 
-    return [...systemCategories, ...customCategories];
+    return customCategories;
   };
 
-  const categories = getCategories();
+  const categories = getCustomCategories();
 
   const priorities = [
     { id: 'high', label: t.priorities.high, color: '#F87171' },
@@ -93,7 +91,7 @@ export function TaskDetail({ task, onBack, onSave, onDelete, onComplete }: TaskD
       <div
         className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between border-b"
         style={{
-          ...safeAreaPadding({ top: 18, left: 16, right: 16 }),
+          ...safeAreaPadding({ top: 12, left: 16, right: 16 }),
           paddingBottom: 16,
           backgroundColor: theme.colors.background + 'F0', // 半透明背景
           backdropFilter: 'blur(10px)',
@@ -188,7 +186,12 @@ export function TaskDetail({ task, onBack, onSave, onDelete, onComplete }: TaskD
 
         {/* Category Selection */}
         <div className="space-y-3">
-          <label className="text-sm" style={{ color: theme.colors.mutedForeground }}>{t.taskDetail.categoryLabel}</label>
+          <div>
+            <label className="text-sm" style={{ color: theme.colors.mutedForeground }}>{t.taskDetail.categoryLabel}</label>
+            <p className="text-xs mt-1" style={{ color: theme.colors.mutedForeground + '80' }}>
+              {currentLanguage === 'zh' ? '系统分类（已完成/进行中/逾期）由系统自动管理' : 'System categories (Completed/In Progress/Overdue) are managed automatically'}
+            </p>
+          </div>
           <CategorySlider
             items={categories}
             selectedId={category}
